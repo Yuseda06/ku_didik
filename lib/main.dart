@@ -35,10 +35,6 @@ class MyApp extends StatelessWidget {
         useMaterial3: false,
       ),
       home: Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: const Text('Firebase Login'),
-        ),
         body: StreamBuilder<User?>(
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {
@@ -49,9 +45,7 @@ class MyApp extends StatelessWidget {
             } else if (snapshot.hasError) {
               return const HomePage();
             } else if (snapshot.hasData) {
-              return const Center(
-                child: Text('User is logged in'),
-              );
+              return const HomePage();
             } else {
               return const LoginPage();
             }

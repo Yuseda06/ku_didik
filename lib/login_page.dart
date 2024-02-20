@@ -151,7 +151,11 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     margin: const EdgeInsets.fromLTRB(10, 40, 0, 0),
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        FirebaseAuth.instance.createUserWithEmailAndPassword(
+                            email: emailController.text.trim(),
+                            password: passwordController.text.trim());
+                      },
                       style: ElevatedButton.styleFrom(
                         elevation: 0,
                         backgroundColor: Colors.white,
