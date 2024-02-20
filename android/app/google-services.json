@@ -1,0 +1,77 @@
+{
+  "project_info": {
+    "project_number": "783471223137",
+    "firebase_url": "https://didik2ku-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "didik2ku",
+    "storage_bucket": "didik2ku.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:783471223137:android:0fff503a7f2c2677eb2520",
+        "android_client_info": {
+          "package_name": "com.didik2ku"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "783471223137-jvd879cd2osd9f0ss6p0o0ri9h6hcf5m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.didik2ku",
+            "certificate_hash": "23d3e9e2ef8391986da7795b3efcd7304f91d03a"
+          }
+        },
+        {
+          "client_id": "783471223137-pgkr13o2cgue1snedtle68a95pqas22s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBxHV4XrCiO-4vwU8flCtvmyJQvlT78ZZQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "783471223137-pgkr13o2cgue1snedtle68a95pqas22s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:783471223137:android:0dd93727f16acc00eb2520",
+        "android_client_info": {
+          "package_name": "com.ku_didik"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "783471223137-pgkr13o2cgue1snedtle68a95pqas22s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBxHV4XrCiO-4vwU8flCtvmyJQvlT78ZZQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "783471223137-pgkr13o2cgue1snedtle68a95pqas22s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
