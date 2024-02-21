@@ -24,6 +24,22 @@ class _SignUpPageState extends State<SignUpPage> {
     super.dispose();
   }
 
+  // Function to handle user registration
+  Future<void> _signUp() async {
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+      );
+
+      // Navigate to home page upon successful registration
+      Navigator.pushNamed(context, '/home');
+    } catch (e) {
+      // Handle registration failure, you can show an error message
+      print('Error during registration: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -136,11 +152,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                     margin: const EdgeInsets.fromLTRB(30, 40, 0, 0),
                     child: ElevatedButton(
-                      onPressed: () {
-                        FirebaseAuth.instance.createUserWithEmailAndPassword(
-                            email: emailController.text.trim(),
-                            password: passwordController.text.trim());
-                      },
+                      onPressed: _signUp,
                       style: ElevatedButton.styleFrom(
                         elevation: 0,
                         backgroundColor: Colors.teal[600],

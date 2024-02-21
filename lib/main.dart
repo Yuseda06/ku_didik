@@ -29,9 +29,8 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -59,7 +58,16 @@ class MyApp extends StatelessWidget {
             } else if (snapshot.hasData) {
               return const HomePage();
             } else {
-              return const LoginPage();
+              // Check if a user has just signed up
+              if (FirebaseAuth.instance.currentUser != null) {
+                // Navigate to HomePage after signup
+                WidgetsBinding.instance!.addPostFrameCallback((_) {
+                  Navigator.pushReplacementNamed(context, '/home');
+                });
+                return Container(); // Return an empty container as navigation is in progress
+              } else {
+                return const LoginPage();
+              }
             }
           },
         ),
