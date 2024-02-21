@@ -28,6 +28,7 @@ class AppHome extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.amber,
         onPressed: () {
           // Add your onPressed code here!
         },
