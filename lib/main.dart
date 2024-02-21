@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:ku_didik/home_page.dart';
 import 'package:ku_didik/login_page.dart';
+import 'package:ku_didik/signup_page.dart';
 
 void main() async {
   await dotenv.load(fileName: ".env");
@@ -34,6 +35,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      routes: {
+        '/login': (context) => const LoginPage(),
+        '/home': (context) => const HomePage(),
+        '/sign_up': (context) => const SignUpPage(),
+      },
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.amber)
@@ -49,7 +55,7 @@ class MyApp extends StatelessWidget {
                 child: CircularProgressIndicator(),
               );
             } else if (snapshot.hasError) {
-              return const HomePage();
+              return const SignUpPage();
             } else if (snapshot.hasData) {
               return const HomePage();
             } else {

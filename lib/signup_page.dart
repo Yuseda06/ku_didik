@@ -1,40 +1,26 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ku_didik/common_widgets/didik_input_type.dart';
-import 'package:package_info/package_info.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<SignUpPage> createState() => _SignUpPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _SignUpPageState extends State<SignUpPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-
-  String version = '';
-  String buildNumber = '';
-
-  @override
-  void initState() {
-    super.initState();
-    _getVersionInfo();
-  }
-
-  Future<void> _getVersionInfo() async {
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    setState(() {
-      version = packageInfo.version;
-      buildNumber = packageInfo.buildNumber;
-    });
-  }
+  final usernameController = TextEditingController();
+  final profileUrlController = TextEditingController();
 
   @override
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
+    usernameController.dispose();
+    profileUrlController.dispose();
     super.dispose();
   }
 
@@ -63,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(
                 height: 40,
               ),
-              Text('Welcome Back',
+              Text('Create an account',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -71,6 +57,16 @@ class _LoginPageState extends State<LoginPage> {
                   )),
               const SizedBox(
                 height: 40,
+              ),
+              DidikInputType(
+                  controller: usernameController, hintText: 'Username'),
+              const SizedBox(
+                height: 15,
+              ),
+              DidikInputType(
+                  controller: profileUrlController, hintText: 'Profile URL'),
+              const SizedBox(
+                height: 15,
               ),
               DidikInputType(
                   controller: emailController, hintText: 'Email Address'),
@@ -102,9 +98,7 @@ class _LoginPageState extends State<LoginPage> {
                     margin: const EdgeInsets.fromLTRB(0, 40, 0, 0),
                     child: ElevatedButton(
                       onPressed: () {
-                        FirebaseAuth.instance.signInWithEmailAndPassword(
-                            email: emailController.text.trim(),
-                            password: passwordController.text.trim());
+                        Navigator.pushNamed(context, '/login');
                       },
                       style: ElevatedButton.styleFrom(
                         elevation: 0,
@@ -143,7 +137,9 @@ class _LoginPageState extends State<LoginPage> {
                     margin: const EdgeInsets.fromLTRB(30, 40, 0, 0),
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, '/sign_up');
+                        FirebaseAuth.instance.createUserWithEmailAndPassword(
+                            email: emailController.text.trim(),
+                            password: passwordController.text.trim());
                       },
                       style: ElevatedButton.styleFrom(
                         elevation: 0,
@@ -164,16 +160,6 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                 ],
-              ),
-              const SizedBox(
-                height: 90,
-              ),
-              Center(
-                child: Text('Version: $version', style: TextStyle(fontSize: 8)),
-              ),
-              Center(
-                child: Text('Build Number: $buildNumber',
-                    style: TextStyle(fontSize: 8)),
               ),
             ]),
       ),

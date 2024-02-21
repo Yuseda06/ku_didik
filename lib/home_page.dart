@@ -13,17 +13,15 @@ class HomePage extends StatelessWidget {
     }
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.amber,
         centerTitle: true,
         title: Text('Home Page'),
       ),
       body: SafeArea(
           child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Center(
-            child: Text(' ${user.email}'),
-          ),
           Container(
             width: MediaQuery.of(context).size.width * 0.3,
             decoration: const BoxDecoration(
@@ -61,6 +59,12 @@ class HomePage extends StatelessWidget {
                     fontSize: 20, color: Color.fromARGB(255, 6, 100, 105)),
               ),
             ),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Center(
+            child: Text(' ${user.email}'),
           ),
         ],
       )),
