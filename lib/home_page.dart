@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ku_didik/common_widgets/didik_app_bar.dart';
+import 'package:ku_didik/common_widgets/didik_drawer.dart';
 import 'package:ku_didik/features/authentication/models/users.dart';
 import 'package:provider/provider.dart';
 import 'package:ku_didik/utils/theme/profile_provider.dart';
@@ -18,6 +19,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late Stream<Users?> _userStream;
+
   String? profileUrl;
 
   @override
@@ -46,36 +48,7 @@ class _HomePageState extends State<HomePage> {
         title: 'Home Page',
         avatarUrl: base64Image,
       ),
-      drawer: Drawer(
-        child: ListView(
-          children: [
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.amber,
-              ),
-              child: const Text(
-                'Drawer Header',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
-              ),
-            ),
-            ListTile(
-              title: const Text('Item 1'),
-              onTap: () {
-                // Handle drawer item click
-              },
-            ),
-            ListTile(
-              title: const Text('Item 2'),
-              onTap: () {
-                // Handle drawer item click
-              },
-            ),
-          ],
-        ),
-      ),
+      drawer: DidikDrawer(),
       body: Container(
         child: Stack(
           children: [
