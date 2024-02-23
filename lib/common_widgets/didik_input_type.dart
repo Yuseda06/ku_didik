@@ -8,6 +8,18 @@ class DidikInputType extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Icon icon;
+
+    if (hintText == 'Password') {
+      icon = Icon(Icons.lock);
+    } else if (hintText == 'Email Address') {
+      icon = Icon(Icons.email);
+    } else if (hintText == 'Username') {
+      icon = Icon(Icons.person);
+    } else {
+      icon = Icon(Icons.link);
+    }
+
     return Center(
       child: Container(
         margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
@@ -28,6 +40,8 @@ class DidikInputType extends StatelessWidget {
             color: Colors.black,
           ),
           decoration: InputDecoration(
+            contentPadding: const EdgeInsets.fromLTRB(0, 14, 0, 0),
+            prefixIcon: icon,
             hintText: hintText,
             hintStyle: TextStyle(
               fontSize: 15,

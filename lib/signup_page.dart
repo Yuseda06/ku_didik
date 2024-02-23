@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:ku_didik/common_widgets/didik_button.dart';
 import 'package:ku_didik/common_widgets/didik_input_type.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -33,7 +34,7 @@ class _SignUpPageState extends State<SignUpPage> {
       );
 
       // Navigate to home page upon successful registration
-      Navigator.pushNamed(context, '/home');
+      Navigator.pushReplacementNamed(context, '/home');
     } catch (e) {
       // Handle registration failure, you can show an error message
       print('Error during registration: $e');
@@ -51,13 +52,13 @@ class _SignUpPageState extends State<SignUpPage> {
               ClipRRect(
                 borderRadius: BorderRadius.only(
                   bottomLeft:
-                      Radius.circular(20.0), // Adjust the radius as needed
+                      Radius.circular(16.0), // Adjust the radius as needed
                   bottomRight:
-                      Radius.circular(20.0), // Adjust the radius as needed
+                      Radius.circular(16.0), // Adjust the radius as needed
                 ),
                 child: Image.asset(
                   'assets/images/login.gif',
-                  height: 300,
+                  height: 250,
                   width: MediaQuery.of(context).size.width * 1.0,
                   fit: BoxFit.cover,
                 ),
@@ -91,83 +92,31 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
               DidikInputType(
                   controller: passwordController, hintText: 'Password'),
+              DidikButton(
+                  emailController: emailController,
+                  passwordController: passwordController,
+                  hintText: "Sign Up",
+                  buttonColor: Colors.teal,
+                  isSignIn: false),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.3,
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(60)),
-                      boxShadow: [
-                        BoxShadow(
-                          color:
-                              Colors.black12, // You can change the shadow color
-                          spreadRadius:
-                              1.0, // Adjust the spread radius for the shadow
-                          blurRadius:
-                              10.0, // Adjust the blur radius for the shadow
-                          offset: Offset(
-                              0.0, 2.0), // Adjust the offset for the shadow
-                        ),
-                      ],
-                    ),
-                    margin: const EdgeInsets.fromLTRB(0, 40, 0, 0),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/login');
-                      },
-                      style: ElevatedButton.styleFrom(
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                              60), // Adjust the value as needed
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 30, vertical: 12),
-
-                        // Adjust the values as needed
-                      ),
-                      child: const Text(
-                        'Login',
-                        style: TextStyle(fontSize: 15, color: Colors.white),
-                      ),
+                  Text(
+                    "Already have an account?",
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.black54,
                     ),
                   ),
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.3,
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(60)),
-                      boxShadow: [
-                        BoxShadow(
-                          color:
-                              Colors.black12, // You can change the shadow color
-                          spreadRadius:
-                              0.5, // Adjust the spread radius for the shadow
-                          blurRadius:
-                              10.0, // Adjust the blur radius for the shadow
-                          offset: Offset(
-                              0.0, 2.0), // Adjust the offset for the shadow
-                        ),
-                      ],
-                    ),
-                    margin: const EdgeInsets.fromLTRB(30, 40, 0, 0),
-                    child: ElevatedButton(
-                      onPressed: _signUp,
-                      style: ElevatedButton.styleFrom(
-                        elevation: 0,
-                        backgroundColor: Colors.teal[600],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                              60), // Adjust the value as needed
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 12),
-
-                        // Adjust the values as needed
-                      ),
-                      child: const Text(
-                        'Sign Up',
-                        style: TextStyle(fontSize: 15, color: Colors.white),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/sign_in');
+                    },
+                    child: Text(
+                      'Sign In',
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.amber,
                       ),
                     ),
                   ),
