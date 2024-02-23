@@ -1,73 +1,100 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:ku_didik/features/authentication/models/users.dart';
 import 'package:ku_didik/login_page.dart';
+import 'package:flutter/services.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent, // Transparent status bar
+      statusBarIconBrightness: Brightness.dark, // Dark icons on status bar
+      systemNavigationBarColor:
+          Colors.transparent, // Transparent navigation bar
+      systemNavigationBarIconBrightness:
+          Brightness.dark, // Dark icons on navigation bar
+    ));
+
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
       return const LoginPage();
     }
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.amber,
-        centerTitle: true,
-        title: Text('Home Page'),
-      ),
-      body: SafeArea(
-          child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Container(
-            width: MediaQuery.of(context).size.width * 0.3,
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(60)),
-              boxShadow: [
-                BoxShadow(
-                  color: Color.fromRGBO(
-                      228, 228, 228, 1), // You can change the shadow color
-                  spreadRadius: 1.0, // Adjust the spread radius for the shadow
-                  blurRadius: 10.0, // Adjust the blur radius for the shadow
-                  offset: Offset(0.0, 2.0), // Adjust the offset for the shadow
-                ),
-              ],
-            ),
-            margin: const EdgeInsets.fromLTRB(10, 40, 0, 0),
+      // appBar: AppBar(
+      //   backgroundColor: Colors.amber,
+      //   centerTitle: true,
+      //   title: const Text('Home Page'),
+      // ),
+      body: Container(
+        child: Stack(children: [
+          Positioned(
+            top: 50,
+            left: 0,
             child: ElevatedButton(
               onPressed: () {
                 FirebaseAuth.instance.signOut();
               },
-              style: ElevatedButton.styleFrom(
-                elevation: 0,
-                backgroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.circular(60), // Adjust the value as needed
-                ),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-
-                // Adjust the values as needed
-              ),
-              child: const Text(
-                'Sign Out',
-                style: TextStyle(
-                    fontSize: 20, color: Color.fromARGB(255, 6, 100, 105)),
+              child: Text('Sign Out'),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20.0, 100.0, 20.0, 20),
+            child: SafeArea(
+              child: StreamBuilder<List<Users>>(
+                stream: readUser(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: Text('Error: ${snapshot.error}'),
+                    );
+                  } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                    final users = snapshot.data!;
+                    for (int i = 0; i < users.length; i++) {
+                      print('User $i: ${users[i].username}');
+                    }
+                    return ListView.builder(
+                      itemCount: users.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: Text(users[index].username),
+                        );
+                      },
+                    );
+                  } else {
+                    return const Center(
+                      child: Text('No data found'),
+                    );
+                  }
+                },
               ),
             ),
           ),
-          SizedBox(
-            height: 20,
-          ),
-          Center(
-            child: Text(' ${user.email}'),
-          ),
-        ],
-      )),
+        ]),
+      ),
     );
   }
+}
+
+Stream<List<Users>> readUser() =>
+    FirebaseFirestore.instance.collection('users').snapshots().map(
+          (snapshot) => snapshot.docs
+              .map((doc) => Users.fromJson(doc.data() as Map<String, dynamic>))
+              .toList(),
+        );
+
+void main() {
+  runApp(
+    MaterialApp(
+      home: HomePage(),
+    ),
+  );
 }

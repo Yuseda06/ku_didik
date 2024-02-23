@@ -1,10 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ku_didik/common_widgets/didik_button.dart';
 import 'package:ku_didik/common_widgets/didik_input_type.dart';
 
 class SignUpPage extends StatefulWidget {
-  const SignUpPage({super.key});
+  const SignUpPage({Key? key}) : super(key: key);
 
   @override
   State<SignUpPage> createState() => _SignUpPageState();
@@ -28,10 +29,22 @@ class _SignUpPageState extends State<SignUpPage> {
   // Function to handle user registration
   Future<void> _signUp() async {
     try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      // Create user account in Firebase Authentication
+      UserCredential userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
       );
+
+      // Retrieve the user ID from the created user account
+      String userId = userCredential.user!.uid;
+
+      // Store additional user data in Firestore
+      await FirebaseFirestore.instance.collection('users').doc(userId).set({
+        'username': usernameController.text.trim(),
+        'profileUrl': profileUrlController.text.trim(),
+        // Add other fields as needed
+      });
 
       // Navigate to home page upon successful registration
       Navigator.pushReplacementNamed(context, '/home');
@@ -46,83 +59,95 @@ class _SignUpPageState extends State<SignUpPage> {
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.only(
-                  bottomLeft:
-                      Radius.circular(16.0), // Adjust the radius as needed
-                  bottomRight:
-                      Radius.circular(16.0), // Adjust the radius as needed
-                ),
-                child: Image.asset(
-                  'assets/images/login.gif',
-                  height: 250,
-                  width: MediaQuery.of(context).size.width * 1.0,
-                  fit: BoxFit.cover,
-                ),
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(20.0),
+                bottomRight: Radius.circular(20.0),
               ),
-              const SizedBox(
-                height: 40,
+              child: Image.asset(
+                'assets/images/login.gif',
+                height: 250,
+                width: MediaQuery.of(context).size.width * 1.0,
+                fit: BoxFit.cover,
               ),
-              Text('Create an account',
+            ),
+            const SizedBox(
+              height: 40,
+            ),
+            Text(
+              'Create an Account',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.black54,
+              ),
+            ),
+            const SizedBox(
+              height: 40,
+            ),
+            DidikInputType(
+              controller: usernameController,
+              hintText: 'Username',
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            DidikInputType(
+              controller: profileUrlController,
+              hintText: 'Profile URL',
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            DidikInputType(
+              controller: emailController,
+              hintText: 'Email Address',
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            DidikInputType(
+              controller: passwordController,
+              hintText: 'Password',
+            ),
+            DidikButton(
+                usernameController: usernameController,
+                profileUrlController: profileUrlController,
+                emailController: emailController,
+                passwordController: passwordController,
+                hintText: "Sign Up",
+                buttonColor: Colors.teal,
+                isSignIn: false,
+                context: context),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Already have an account?",
                   style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
                     color: Colors.black54,
-                  )),
-              const SizedBox(
-                height: 40,
-              ),
-              DidikInputType(
-                  controller: usernameController, hintText: 'Username'),
-              const SizedBox(
-                height: 15,
-              ),
-              DidikInputType(
-                  controller: profileUrlController, hintText: 'Profile URL'),
-              const SizedBox(
-                height: 15,
-              ),
-              DidikInputType(
-                  controller: emailController, hintText: 'Email Address'),
-              const SizedBox(
-                height: 15,
-              ),
-              DidikInputType(
-                  controller: passwordController, hintText: 'Password'),
-              DidikButton(
-                  emailController: emailController,
-                  passwordController: passwordController,
-                  hintText: "Sign Up",
-                  buttonColor: Colors.teal,
-                  isSignIn: false),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Already have an account?",
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/sign_in');
+                  },
+                  child: Text(
+                    'Sign In',
                     style: TextStyle(
                       fontSize: 15,
-                      color: Colors.black54,
+                      color: Colors.amber,
                     ),
                   ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/sign_in');
-                    },
-                    child: Text(
-                      'Sign In',
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: Colors.amber,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ]),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

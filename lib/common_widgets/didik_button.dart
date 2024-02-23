@@ -1,19 +1,27 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class DidikButton extends StatelessWidget {
   final TextEditingController emailController;
   final TextEditingController passwordController;
+  final TextEditingController? usernameController;
+  final TextEditingController? profileUrlController;
   final String hintText;
   final Color buttonColor;
   final bool isSignIn;
+  final BuildContext? context;
 
-  DidikButton(
-      {required this.emailController,
-      required this.passwordController,
-      required this.hintText,
-      required this.buttonColor,
-      required this.isSignIn});
+  DidikButton({
+    required this.emailController,
+    required this.passwordController,
+    required this.hintText,
+    required this.buttonColor,
+    required this.isSignIn,
+    this.usernameController,
+    this.profileUrlController,
+    this.context,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +31,10 @@ class DidikButton extends StatelessWidget {
         borderRadius: BorderRadius.all(Radius.circular(5)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black12, // You can change the shadow color
-            spreadRadius: 1.0, // Adjust the spread radius for the shadow
-            blurRadius: 10.0, // Adjust the blur radius for the shadow
-            offset: Offset(0.0, 2.0), // Adjust the offset for the shadow
+            color: Colors.black12,
+            spreadRadius: 1.0,
+            blurRadius: 10.0,
+            offset: Offset(0.0, 2.0),
           ),
         ],
       ),
@@ -36,19 +44,16 @@ class DidikButton extends StatelessWidget {
           if (isSignIn) {
             _signInWithEmailAndPassword();
           } else {
-            _createUserWithEmailAndPassword();
+            _signUp();
           }
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: buttonColor,
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius:
-                BorderRadius.circular(10), // Adjust the value as needed
+            borderRadius: BorderRadius.circular(10),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-
-          // Adjust the values as needed
         ),
         child: Text(
           hintText,
@@ -65,20 +70,32 @@ class DidikButton extends StatelessWidget {
         password: passwordController.text.trim(),
       );
     } catch (e) {
-      // Handle sign-in errors
       print('Error signing in: $e');
     }
   }
 
-  Future<void> _createUserWithEmailAndPassword() async {
+  Future<void> _signUp() async {
     try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      UserCredential userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
       );
+
+      String userId = userCredential.user!.uid;
+
+      if (usernameController != null && profileUrlController != null) {
+        await FirebaseFirestore.instance.collection('users').doc(userId).set({
+          'username': usernameController!.text.trim(),
+          'profileUrl': profileUrlController!.text.trim(),
+        });
+      }
+
+      if (context != null) {
+        Navigator.pushReplacementNamed(context!, '/home');
+      }
     } catch (e) {
-      // Handle sign-up errors
-      print('Error signing up: $e');
+      print('Error during registration: $e');
     }
   }
 }
