@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 
 class RoundedAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -11,6 +14,14 @@ class RoundedAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    Uint8List bytes = base64.decode(avatarUrl.split(',').last);
+
+    // Create a unique key for each user
+    final Key imageKey = Key(avatarUrl);
+
+    // Create Image.memory with the bytes and key
+    final Image avatarImage = Image.memory(bytes, key: imageKey);
+
     return Material(
       elevation: 0.0, // Set elevation to 0 to remove default shadow
       borderRadius: const BorderRadius.only(
@@ -41,7 +52,7 @@ class RoundedAppBar extends StatelessWidget implements PreferredSizeWidget {
           actions: [
             // Add the avatar icon to the app bar
             CircleAvatar(
-              backgroundImage: NetworkImage(avatarUrl),
+              backgroundImage: avatarImage.image,
             ),
 
             const SizedBox(width: 16.0), // Adjust spacing as needed

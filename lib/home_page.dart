@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ku_didik/common_widgets/didik_app_bar.dart';
 import 'package:ku_didik/features/authentication/models/users.dart';
+import 'package:provider/provider.dart';
+import 'package:ku_didik/utils/theme/profile_provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -33,12 +37,14 @@ class _HomePageState extends State<HomePage> {
       systemNavigationBarIconBrightness: Brightness.dark,
     ));
 
-    print('profileUrl: $profileUrl');
+    final profileProvider = Provider.of<ProfileProvider>(context);
+
+    String base64Image = profileProvider.profileUrl ?? '';
+
     return Scaffold(
       appBar: RoundedAppBar(
         title: 'Home Page',
-        avatarUrl:
-            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0k57tiz2Zsqf1lW7hd2tUJSHqFbD56uugug&usqp=CAU',
+        avatarUrl: base64Image,
       ),
       drawer: Drawer(
         child: ListView(
@@ -89,6 +95,10 @@ class _HomePageState extends State<HomePage> {
                 child: StreamBuilder<Users?>(
                   stream: _userStream,
                   builder: (context, snapshot) {
+                    if (snapshot.hasData && snapshot.data != null) {
+                      profileProvider.setProfileUrl(snapshot.data!.profileUrl);
+                    }
+
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(
                         child: CircularProgressIndicator(),
@@ -103,7 +113,6 @@ class _HomePageState extends State<HomePage> {
                         itemBuilder: (context, index) {
                           return ListTile(
                             title: Text(snapshot.data!.username),
-                            subtitle: Text(snapshot.data!.profileUrl),
                           );
                         },
                       );
