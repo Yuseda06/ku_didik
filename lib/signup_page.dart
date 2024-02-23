@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ku_didik/common_widgets/didik_button.dart';
 import 'package:ku_didik/common_widgets/didik_input_type.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
@@ -24,34 +25,6 @@ class _SignUpPageState extends State<SignUpPage> {
     usernameController.dispose();
     profileUrlController.dispose();
     super.dispose();
-  }
-
-  // Function to handle user registration
-  Future<void> _signUp() async {
-    try {
-      // Create user account in Firebase Authentication
-      UserCredential userCredential =
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim(),
-      );
-
-      // Retrieve the user ID from the created user account
-      String userId = userCredential.user!.uid;
-
-      // Store additional user data in Firestore
-      await FirebaseFirestore.instance.collection('users').doc(userId).set({
-        'username': usernameController.text.trim(),
-        'profileUrl': profileUrlController.text.trim(),
-        // Add other fields as needed
-      });
-
-      // Navigate to home page upon successful registration
-      Navigator.pushReplacementNamed(context, '/home');
-    } catch (e) {
-      // Handle registration failure, you can show an error message
-      print('Error during registration: $e');
-    }
   }
 
   @override

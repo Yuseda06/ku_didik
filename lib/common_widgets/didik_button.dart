@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class DidikButton extends StatelessWidget {
   final TextEditingController emailController;
@@ -22,6 +23,16 @@ class DidikButton extends StatelessWidget {
     this.profileUrlController,
     this.context,
   });
+
+  void showToast(String message) {
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      backgroundColor: Colors.red,
+      textColor: Colors.white,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +106,39 @@ class DidikButton extends StatelessWidget {
         Navigator.pushReplacementNamed(context!, '/home');
       }
     } catch (e) {
-      print('Error during registration: $e');
+      if (e is FirebaseAuthException) {
+        // Handle Firebase Authentication errors
+        switch (e.code) {
+          case 'invalid-email':
+            showToast('Please enter a valid email');
+            break;
+          case 'user-disabled':
+            showToast('User with this email has been disabled');
+            break;
+          case 'user-not-found':
+            showToast('User with this email not found');
+            break;
+          case 'wrong-password':
+            showToast('Wrong password provided for this user');
+            break;
+          case 'email-already-in-use':
+            showToast('Email address is already in use');
+            break;
+          case 'account-exists-with-different-credential':
+            showToast('Email address already exists with a different sign-in');
+            break;
+          case 'requires-recent-login':
+            showToast('Please sign in again to continue');
+          case 'weak-password':
+            showToast('Password provided is too weak');
+            break;
+          default:
+            showToast('Error during registration: ${e.message}');
+        }
+      } else {
+        // Handle other non-Firebase errors
+        showToast('Error during registration: $e');
+      }
     }
   }
 }
