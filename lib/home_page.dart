@@ -9,6 +9,7 @@ import 'package:ku_didik/common_widgets/didik_drawer.dart';
 import 'package:ku_didik/features/authentication/models/users.dart';
 import 'package:provider/provider.dart';
 import 'package:ku_didik/utils/theme/profile_provider.dart';
+import 'package:ku_didik/utils/theme/username_provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -40,13 +41,11 @@ class _HomePageState extends State<HomePage> {
     ));
 
     final profileProvider = Provider.of<ProfileProvider>(context);
-
-    String base64Image = profileProvider.profileUrl ?? '';
+    final usernameProvider = Provider.of<UsernameProvider>(context);
 
     return Scaffold(
       appBar: RoundedAppBar(
         title: 'Home Page',
-        avatarUrl: base64Image,
       ),
       drawer: DidikDrawer(),
       body: Container(
@@ -70,6 +69,7 @@ class _HomePageState extends State<HomePage> {
                   builder: (context, snapshot) {
                     if (snapshot.hasData && snapshot.data != null) {
                       profileProvider.setProfileUrl(snapshot.data!.profileUrl);
+                      usernameProvider.setUsername(snapshot.data!.username);
                     }
 
                     if (snapshot.connectionState == ConnectionState.waiting) {
