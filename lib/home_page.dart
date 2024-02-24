@@ -35,10 +35,22 @@ class _HomePageState extends State<HomePage> {
     final profileProvider = Provider.of<ProfileProvider>(context);
     final usernameProvider = Provider.of<UsernameProvider>(context);
 
+    String getGreeting() {
+      var hour = DateTime.now().hour;
+
+      if (hour < 12) {
+        return 'Good Morning';
+      } else if (hour < 18) {
+        return 'Good Afternoon';
+      } else {
+        return 'Good Evening';
+      }
+    }
+
     return Scaffold(
-      appBar: RoundedAppBar(
-        title: 'Home Page',
-      ),
+      // appBar: RoundedAppBar(
+      //   title: 'Home Page',
+      // ),
       drawer: DidikDrawer(),
       body: Stack(
         children: [
@@ -64,19 +76,71 @@ class _HomePageState extends State<HomePage> {
                 profileProvider.setProfileUrl(snapshot.data!.profileUrl);
                 return Stack(
                   children: [
-                    Positioned(
-                      top: 0,
-                      right: 0,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          FirebaseAuth.instance.signOut();
-                        },
-                        child: Text('Sign Out'),
+                    Padding(
+                      padding: const EdgeInsets.all(0.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(30.0),
+                            bottomRight: Radius.circular(30.0),
+                          ),
+                          color: Colors.amber, // Set your desired app bar color
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black
+                                  .withOpacity(0.1), // Set the shadow color
+                              blurRadius: 10.0, // Set the blur radius
+                              spreadRadius: 5.0, // Set the spread radius
+                              offset: const Offset(0, 2), // Set the offset
+                            ),
+                          ],
+                        ),
+                        height: 90,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.only(top: 20),
+                              child: IconButton(
+                                icon: const Icon(Icons.menu),
+                                onPressed: () {
+                                  Scaffold.of(context).openDrawer();
+                                },
+                              ),
+                            ),
+                            SizedBox(width: 8),
+                            Container(
+                              padding: const EdgeInsets.only(top: 20),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${getGreeting()}!',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  Text(
+                                    '${snapshot.data!.username}!',
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.brown),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     Positioned(
-                      top: -30,
-                      right: 0,
+                      top: 30,
+                      right: 10,
                       height: 50,
                       width: 50,
                       child: ClipOval(
@@ -84,13 +148,6 @@ class _HomePageState extends State<HomePage> {
                           bytes,
                           fit: BoxFit.cover,
                         ),
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(snapshot.data!.username),
                       ),
                     ),
                   ],
