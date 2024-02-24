@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
@@ -41,6 +43,7 @@ class _DidikDrawerState extends State<DidikDrawer> {
                     onTap: () async {
                       final pickedFile = await ImagePicker()
                           .pickImage(source: ImageSource.camera);
+
                       if (pickedFile != null) {
                         final bytes = await pickedFile.readAsBytes();
                         final base64Image = base64.encode(bytes);
@@ -84,6 +87,17 @@ class _DidikDrawerState extends State<DidikDrawer> {
               // Handle drawer item click
             },
           ),
+          Container(
+            margin: EdgeInsets.fromLTRB(10, 20, 10, 20),
+            child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.teal, // background
+                ),
+                onPressed: () {
+                  FirebaseAuth.instance.signOut();
+                },
+                child: Text('Sign Out', style: TextStyle(color: Colors.white))),
+          )
         ],
       ),
     );

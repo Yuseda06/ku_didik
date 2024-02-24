@@ -64,11 +64,11 @@ class DidikButton extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
         ),
         child: Text(
           hintText,
-          style: TextStyle(fontSize: 15, color: Colors.white),
+          style: TextStyle(fontSize: 20, color: Colors.white),
         ),
       ),
     );
