@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ku_didik/common_widgets/didik_app_bar.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class AddVocab extends StatefulWidget {
   const AddVocab({Key? key}) : super(key: key);
@@ -9,6 +10,14 @@ class AddVocab extends StatefulWidget {
 }
 
 class _AddVocabState extends State<AddVocab> {
+  DatabaseReference ref = FirebaseDatabase.instance.ref("users");
+  DatabaseReference databaseReference = FirebaseDatabase.instance.ref();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   final TextEditingController _vocabController = TextEditingController();
 
   @override
@@ -24,8 +33,21 @@ class _AddVocabState extends State<AddVocab> {
       appBar: RoundedAppBar(
         title: 'Adding More Vocab',
       ),
-      body: const Center(
-        child: Text('Add Vocab'),
+      body: SingleChildScrollView(
+        child: StreamBuilder<DatabaseEvent>(
+          stream: ref.onValue,
+          builder:
+              (BuildContext context, AsyncSnapshot<DatabaseEvent> snapshot) {
+            var data = snapshot.data?.snapshot.value as Map<String, dynamic>?;
+
+            print('data: $data  ');
+            if (data != null) {
+              return Text(data.toString());
+            } else {
+              return Text('No data');
+            }
+          },
+        ),
       ),
     );
   }
