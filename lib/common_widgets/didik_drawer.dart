@@ -25,14 +25,13 @@ class _DidikDrawerState extends State<DidikDrawer> {
     Uint8List bytes = base64.decode(base64Image.split(',').last);
 
     return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
+      child: Column(
         children: <Widget>[
           SingleChildScrollView(
             child: Container(
-              padding: EdgeInsets.fromLTRB(9, 9, 9, 9),
-              height: 330,
+              height: 400,
               child: DrawerHeader(
+                padding: EdgeInsets.all(35),
                 decoration: BoxDecoration(
                   color: Color.fromARGB(255, 241, 182, 4),
                   borderRadius: BorderRadius.only(
@@ -40,28 +39,33 @@ class _DidikDrawerState extends State<DidikDrawer> {
                   ),
                 ),
                 child: GestureDetector(
-                    onTap: () async {
-                      final pickedFile = await ImagePicker()
-                          .pickImage(source: ImageSource.camera);
+                  onTap: () async {
+                    final pickedFile = await ImagePicker()
+                        .pickImage(source: ImageSource.camera);
 
-                      if (pickedFile != null) {
-                        final bytes = await pickedFile.readAsBytes();
-                        final base64Image = base64.encode(bytes);
-                        profileProvider.setProfileUrl(base64Image);
-                      }
-                    },
+                    if (pickedFile != null) {
+                      final bytes = await pickedFile.readAsBytes();
+                      final base64Image = base64.encode(bytes);
+                      profileProvider.setProfileUrl(base64Image);
+                    }
+                  },
+                  child: SingleChildScrollView(
                     child: Column(
                       children: [
                         Container(
-                          padding: EdgeInsets.all(10),
+                          padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
                           child: ClipOval(
                             child: Image.memory(
                               bytes,
-                              width: 200, // Set your desired width
-                              height: 200, // Set your desired height
+                              width: 200,
+                              height: 200,
                               fit: BoxFit.cover,
                             ),
                           ),
+                        ),
+                        Divider(
+                          height: 30,
+                          thickness: 2,
                         ),
                         Text(
                           username,
@@ -71,7 +75,9 @@ class _DidikDrawerState extends State<DidikDrawer> {
                           ),
                         ),
                       ],
-                    )),
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
@@ -87,17 +93,19 @@ class _DidikDrawerState extends State<DidikDrawer> {
               // Handle drawer item click
             },
           ),
+          Spacer(), // Add Spacer to push "Sign Out" to the bottom
           Container(
-            margin: EdgeInsets.fromLTRB(10, 20, 10, 20),
+            margin: EdgeInsets.fromLTRB(0, 20, 0, 20),
             child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.teal, // background
-                ),
-                onPressed: () {
-                  FirebaseAuth.instance.signOut();
-                },
-                child: Text('Sign Out', style: TextStyle(color: Colors.white))),
-          )
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.teal,
+              ),
+              onPressed: () {
+                FirebaseAuth.instance.signOut();
+              },
+              child: Text('Sign Out', style: TextStyle(color: Colors.white)),
+            ),
+          ),
         ],
       ),
     );

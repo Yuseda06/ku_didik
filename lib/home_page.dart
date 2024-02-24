@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:ku_didik/common_widgets/didik_app_bar.dart';
 import 'package:ku_didik/common_widgets/didik_drawer.dart';
 import 'package:ku_didik/features/authentication/models/users.dart';
@@ -21,8 +22,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late Stream<Users?> _userStream;
 
-  String? profileUrl;
-
   @override
   void initState() {
     super.initState();
@@ -33,13 +32,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.dark,
-      systemNavigationBarColor: Colors.transparent,
-      systemNavigationBarIconBrightness: Brightness.dark,
-    ));
-
     final profileProvider = Provider.of<ProfileProvider>(context);
     final usernameProvider = Provider.of<UsernameProvider>(context);
 
@@ -48,58 +40,69 @@ class _HomePageState extends State<HomePage> {
         title: 'Home Page',
       ),
       drawer: DidikDrawer(),
-      body: Container(
-        child: Stack(
-          children: [
-            Positioned(
-              top: 50,
-              left: 0,
-              child: ElevatedButton(
-                onPressed: () {
-                  FirebaseAuth.instance.signOut();
-                },
-                child: Text('Sign Out'),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20.0, 100.0, 20.0, 20),
-              child: SafeArea(
-                child: StreamBuilder<Users?>(
-                  stream: _userStream,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData && snapshot.data != null) {
-                      profileProvider.setProfileUrl(snapshot.data!.profileUrl);
-                      usernameProvider.setUsername(snapshot.data!.username);
-                    }
+      body: Stack(
+        children: [
+          StreamBuilder<Users?>(
+            stream: _userStream,
+            builder: (context, snapshot) {
+              if (snapshot.hasData && snapshot.data != null) {
+                profileProvider.setProfileUrl(snapshot.data!.profileUrl);
+                usernameProvider.setUsername(snapshot.data!.username);
+              }
 
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    } else if (snapshot.hasError) {
-                      return Center(
-                        child: Text('Error: ${snapshot.error}'),
-                      );
-                    } else if (snapshot.hasData && snapshot.data != null) {
-                      return ListView.builder(
-                        itemCount: 1,
-                        itemBuilder: (context, index) {
-                          return ListTile(
-                            title: Text(snapshot.data!.username),
-                          );
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else if (snapshot.hasError) {
+                return Center(
+                  child: Text('Error: ${snapshot.error}'),
+                );
+              } else if (snapshot.hasData && snapshot.data != null) {
+                final String base64Image = snapshot.data!.profileUrl;
+                Uint8List bytes = base64Decode(base64Image.split(',').last);
+                profileProvider.setProfileUrl(snapshot.data!.profileUrl);
+                return Stack(
+                  children: [
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          FirebaseAuth.instance.signOut();
                         },
-                      );
-                    } else {
-                      return const Center(
-                        child: Text('User data not found'),
-                      );
-                    }
-                  },
-                ),
-              ),
-            ),
-          ],
-        ),
+                        child: Text('Sign Out'),
+                      ),
+                    ),
+                    Positioned(
+                      top: -30,
+                      right: 0,
+                      height: 50,
+                      width: 50,
+                      child: ClipOval(
+                        child: Image.memory(
+                          bytes,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(snapshot.data!.username),
+                      ),
+                    ),
+                  ],
+                );
+              } else {
+                return const Center(
+                  child: Text('User data not found'),
+                );
+              }
+            },
+          ),
+        ],
       ),
     );
   }
@@ -111,8 +114,6 @@ class _HomePageState extends State<HomePage> {
           .map(
         (snapshot) {
           if (snapshot.exists) {
-            profileUrl = snapshot.data()!['profileUrl'];
-
             return Users.fromJson(snapshot.data() as Map<String, dynamic>);
           } else {
             return null;

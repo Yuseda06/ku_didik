@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:ku_didik/utils/theme/profile_provider.dart';
 import 'package:provider/provider.dart';
 
-class RoundedAppBar extends StatelessWidget implements PreferredSizeWidget {
+class RoundedAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String title;
 
   RoundedAppBar({
@@ -13,25 +13,27 @@ class RoundedAppBar extends StatelessWidget implements PreferredSizeWidget {
   }) : super(key: key);
 
   @override
-  Size get preferredSize => const Size.fromHeight(56.0);
+  _RoundedAppBarState createState() => _RoundedAppBarState();
 
+  @override
+  Size get preferredSize => const Size.fromHeight(60.0);
+}
+
+class _RoundedAppBarState extends State<RoundedAppBar> {
   @override
   Widget build(BuildContext context) {
     // Use Provider to get the profile image URL
     final profileProvider = Provider.of<ProfileProvider>(context);
-    String base64Image = profileProvider.profileUrl ?? '';
 
-    // Convert base64 image to bytes
+    String base64Image = profileProvider.profileUrl;
+
     Uint8List bytes = base64.decode(base64Image.split(',').last);
 
-    // Create a unique key for each user
     final Key imageKey = Key(base64Image);
 
-    // Create Image.memory with the bytes and key
     final Image avatarImage = Image.memory(bytes, key: imageKey);
 
     return Container(
-      height: 300,
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.only(
           bottomLeft: Radius.circular(20.0),
@@ -50,11 +52,19 @@ class RoundedAppBar extends StatelessWidget implements PreferredSizeWidget {
       child: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0.0, // Remove app bar shadow
-        title: Text(title),
+        title: Text(widget.title),
         centerTitle: true,
         actions: [
+          // ClipOval(
+          //   child: Image.memory(
+          //     bytes,
+          //     width: 55, // Set your desired width
+          //     fit: BoxFit.cover,
+          //   ),
+          // ),
           CircleAvatar(
             backgroundImage: avatarImage.image,
+            radius: 20.0, // Set your desired radius
           ),
           const SizedBox(width: 16.0), // Adjust spacing as needed
         ],
