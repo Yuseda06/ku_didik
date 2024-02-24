@@ -5,7 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:ku_didik/common_widgets/didik_app_bar.dart';
 import 'package:ku_didik/common_widgets/didik_drawer.dart';
 import 'package:ku_didik/features/authentication/models/users.dart';
 import 'package:provider/provider.dart';
@@ -81,8 +80,8 @@ class _HomePageState extends State<HomePage> {
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(30.0),
-                            bottomRight: Radius.circular(30.0),
+                            bottomLeft: Radius.circular(50.0),
+                            bottomRight: Radius.circular(50.0),
                           ),
                           color: Colors.amber, // Set your desired app bar color
                           boxShadow: [
@@ -95,15 +94,19 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ],
                         ),
-                        height: 90,
+                        height: 120,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Container(
-                              padding: const EdgeInsets.only(top: 20),
+                              padding: const EdgeInsets.fromLTRB(15, 20, 0, 0),
                               child: IconButton(
-                                icon: const Icon(Icons.menu),
+                                icon: const Icon(
+                                  Icons.menu,
+                                  color: Colors.white,
+                                  size: 30,
+                                ),
                                 onPressed: () {
                                   Scaffold.of(context).openDrawer();
                                 },
@@ -117,7 +120,7 @@ class _HomePageState extends State<HomePage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    '${getGreeting()}!',
+                                    '${getGreeting()} !',
                                     style: TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.bold,
@@ -125,9 +128,9 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   ),
                                   Text(
-                                    '${snapshot.data!.username}!',
+                                    '${snapshot.data!.username}',
                                     style: TextStyle(
-                                        fontSize: 15,
+                                        fontSize: 18,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.brown),
                                   ),
@@ -139,10 +142,10 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     Positioned(
-                      top: 30,
-                      right: 10,
-                      height: 50,
-                      width: 50,
+                      top: 40,
+                      right: 15,
+                      height: 60,
+                      width: 60,
                       child: ClipOval(
                         child: Image.memory(
                           bytes,
