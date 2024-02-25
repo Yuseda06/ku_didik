@@ -5,29 +5,48 @@ import 'package:ku_didik/features/lesson/models/word_meaning.dart';
 class FirebaseController {
   final DatabaseReference _database = FirebaseDatabase.instance.ref();
 
+  Future<void> handleDeleteWord(String word, String username) async {
+    try {
+      // Construct the path to the word in the database
+      String path = 'users/$username/english/vocab/words/$word';
+
+      // Get a reference to the word in the database
+      DatabaseReference wordRef = FirebaseDatabase.instance.ref(path);
+
+      // Remove the word from the database
+      await wordRef.remove();
+
+      print('Word deleted successfully: $word');
+    } catch (error) {
+      print('Error deleting word: $error');
+      // Handle the error as needed
+    }
+  }
+
   Future<void> handleAddWord(
-      String word, String meaning, String? username) async {
-    print("word in english $word");
-    print("meaning in english $meaning");
+    String word,
+    String meaning,
+    String username,
+  ) async {
+    try {
+      // Construct the path to the words in the database
+      String path = 'users/$username/english/vocab/words';
 
-    if (username != null) {
-      final userLessonRef =
-          _database.child('users/$username/english/vocab/words/$word');
+      // Get a reference to the words in the database and push a new child
+      DatabaseReference wordsRef = FirebaseDatabase.instance.ref(path);
+      DatabaseReference newWordRef = wordsRef.push();
 
-      // Set the meaning directly under the word
-      await userLessonRef.set({'meaning': meaning});
-      print("Word added successfully");
-    } else {
-      // If user doesn't exist, create the user and then add the word
-      final newUserRef = _database.child('users').push();
-      final newUserId = newUserRef.key;
+      // Set the values for the new word entry
+      await newWordRef.set({
+        'word': word,
+        'meaning': meaning,
+        'timestamp': ServerValue.timestamp,
+      });
 
-      final newUserLessonRef =
-          _database.child('users/$newUserId/english/vocab/words/$word');
-
-      // Set the meaning directly under the word
-      await newUserLessonRef.set({'meaning': meaning});
-      print("User and word added successfully");
+      print('Word added successfully: $word');
+    } catch (error) {
+      print('Error adding word: $error');
+      // Handle the error as needed
     }
   }
 

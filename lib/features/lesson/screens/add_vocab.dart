@@ -36,20 +36,35 @@ class _AddVocabState extends State<AddVocab> {
         children: [
           Expanded(
             child: FirebaseAnimatedList(
-                query: databaseReference,
-                itemBuilder: (context, snapshot, index, animation) {
-                  // Get the word (key) from the current snapshot and assert it's not null
-                  String word = snapshot.key!;
+              query: databaseReference.orderByChild('timestamp'),
+              itemBuilder: (context, snapshot, index, animation) {
+                String word = snapshot.child('word').value?.toString() ?? "";
 
-                  // Get the meaning from the child 'meaning' and handle null case
-                  String meaning =
-                      snapshot.child('meaning').value?.toString() ?? "";
+                // Get the meaning from the child 'meaning' and handle null case
+                String meaning =
+                    snapshot.child('meaning').value?.toString() ?? "";
 
-                  return ListTile(
-                    title: Text(word),
-                    subtitle: Text(meaning),
-                  );
-                }),
+                return ListTile(
+                  title: Text(word),
+                  subtitle: Text(meaning),
+                  leading: Container(
+                    margin: const EdgeInsets.only(top: 10.0),
+                    child:
+                        const Icon(Icons.circle, color: Colors.teal, size: 14),
+                  ),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.delete, color: Colors.red),
+                    onPressed: () {
+                      // Call handleDeleteWord from FirebaseController
+                      firebaseController.handleDeleteWord(
+                        word,
+                        'Irfan Yusri', // Replace with the actual username
+                      );
+                    },
+                  ),
+                );
+              },
+            ),
           )
         ],
       ),
@@ -93,7 +108,8 @@ class _AddVocabState extends State<AddVocab> {
                     await firebaseController.handleAddWord(
                       enteredVocab,
                       bahasaMalaysiaMeaning,
-                      'Irfan Yusri', // Replace with the actual username
+                      'Irfan Yusri',
+                      // Replace with the actual username
                     );
 
                     // Close the modal

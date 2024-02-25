@@ -12,7 +12,7 @@ class WordMeaning {
 
     if (data != null) {
       return WordMeaning(
-        word: data['word'] ?? '',
+        word: data['words'] ?? '',
         meaning: data['meaning'] ?? '',
       );
     } else {
