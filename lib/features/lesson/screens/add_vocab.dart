@@ -39,7 +39,8 @@ class _AddVocabState extends State<AddVocab> {
               query: databaseReference.orderByChild('timestamp'),
               itemBuilder: (context, snapshot, index, animation) {
                 String word = snapshot.child('word').value?.toString() ?? "";
-
+                String wordKey = snapshot.key ?? ""; // Get the unique key
+                // Print the unique key (for debugging purposes
                 // Get the meaning from the child 'meaning' and handle null case
                 String meaning =
                     snapshot.child('meaning').value?.toString() ?? "";
@@ -57,8 +58,9 @@ class _AddVocabState extends State<AddVocab> {
                     onPressed: () {
                       // Call handleDeleteWord from FirebaseController
                       firebaseController.handleDeleteWord(
-                        word,
-                        'Irfan Yusri', // Replace with the actual username
+                        wordKey,
+                        'Irfan Yusri',
+                        // Replace with the actual username
                       );
                     },
                   ),

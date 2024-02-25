@@ -5,20 +5,21 @@ import 'package:ku_didik/features/lesson/models/word_meaning.dart';
 class FirebaseController {
   final DatabaseReference _database = FirebaseDatabase.instance.ref();
 
-  Future<void> handleDeleteWord(String word, String username) async {
+  Future<void> handleDeleteWord(String wordKey, String username) async {
     try {
       // Construct the path to the word in the database
-      String path = 'users/$username/english/vocab/words/$word';
+      String wordPath = 'users/$username/english/vocab/words/$wordKey';
 
       // Get a reference to the word in the database
-      DatabaseReference wordRef = FirebaseDatabase.instance.ref(path);
+      DatabaseReference wordRef = FirebaseDatabase.instance.ref(wordPath);
 
-      // Remove the word from the database
+      // Remove the word and its children (meaning, timestamp) from the database
       await wordRef.remove();
 
-      print('Word deleted successfully: $word');
+      print(
+          'Word and associated data deleted successfully for wordKey: $wordKey');
     } catch (error) {
-      print('Error deleting word: $error');
+      print('Error deleting word and associated data: $error');
       // Handle the error as needed
     }
   }
