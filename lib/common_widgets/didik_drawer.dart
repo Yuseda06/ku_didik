@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:ku_didik/utils/theme/profile_provider.dart';
 import 'package:ku_didik/utils/theme/username_provider.dart';
@@ -29,6 +28,7 @@ class _DidikDrawerState extends State<DidikDrawer> {
         children: <Widget>[
           SingleChildScrollView(
             child: Container(
+              padding: EdgeInsets.all(8),
               height: 400,
               child: DrawerHeader(
                 padding: EdgeInsets.all(35),
@@ -39,15 +39,8 @@ class _DidikDrawerState extends State<DidikDrawer> {
                   ),
                 ),
                 child: GestureDetector(
-                  onTap: () async {
-                    final pickedFile = await ImagePicker()
-                        .pickImage(source: ImageSource.camera);
-
-                    if (pickedFile != null) {
-                      final bytes = await pickedFile.readAsBytes();
-                      final base64Image = base64.encode(bytes);
-                      profileProvider.setProfileUrl(base64Image);
-                    }
+                  onTap: () {
+                    Navigator.pushNamed(context, '/pick_image');
                   },
                   child: SingleChildScrollView(
                     child: Column(
@@ -95,15 +88,19 @@ class _DidikDrawerState extends State<DidikDrawer> {
           ),
           Spacer(), // Add Spacer to push "Sign Out" to the bottom
           Container(
+            padding: EdgeInsets.all(8),
+            width: double.infinity,
             margin: EdgeInsets.fromLTRB(0, 20, 0, 20),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.teal,
+                elevation: 0.0,
+                backgroundColor: Colors.amber,
               ),
               onPressed: () {
                 FirebaseAuth.instance.signOut();
               },
-              child: Text('Sign Out', style: TextStyle(color: Colors.white)),
+              child: Text('Sign Out',
+                  style: TextStyle(color: Colors.white, fontSize: 18)),
             ),
           ),
         ],

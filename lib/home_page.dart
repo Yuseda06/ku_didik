@@ -94,7 +94,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ],
                         ),
-                        height: 120,
+                        height: 150,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -105,32 +105,35 @@ class _HomePageState extends State<HomePage> {
                                 icon: const Icon(
                                   Icons.menu,
                                   color: Colors.white,
-                                  size: 30,
+                                  size: 42,
                                 ),
                                 onPressed: () {
                                   Scaffold.of(context).openDrawer();
                                 },
                               ),
                             ),
-                            SizedBox(width: 8),
+                            SizedBox(width: 70),
                             Container(
-                              padding: const EdgeInsets.only(top: 20),
+                              padding: const EdgeInsets.only(top: 35),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text(
                                     '${getGreeting()} !',
                                     style: TextStyle(
-                                      fontSize: 15,
+                                      fontSize: 18,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white,
                                     ),
                                   ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
                                   Text(
                                     '${snapshot.data!.username}',
                                     style: TextStyle(
-                                        fontSize: 18,
+                                        fontSize: 22,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.brown),
                                   ),
@@ -142,14 +145,19 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     Positioned(
-                      top: 40,
+                      top: 64,
                       right: 15,
-                      height: 60,
-                      width: 60,
-                      child: ClipOval(
-                        child: Image.memory(
-                          bytes,
-                          fit: BoxFit.cover,
+                      height: 65,
+                      width: 65,
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(context, '/pick_image');
+                        },
+                        child: ClipOval(
+                          child: Image.memory(
+                            bytes,
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                     ),

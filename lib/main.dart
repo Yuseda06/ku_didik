@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:camera/camera.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:ku_didik/features/lesson/screens/add_vocab.dart';
 import 'package:ku_didik/home_page.dart';
 import 'package:ku_didik/login_page.dart';
 import 'package:ku_didik/signup_page.dart';
+import 'package:ku_didik/utils/pick_image.dart';
 import 'package:provider/provider.dart';
 import 'package:ku_didik/utils/theme/profile_provider.dart';
 import 'package:ku_didik/utils/theme/username_provider.dart';
@@ -53,6 +55,7 @@ class MyApp extends StatelessWidget {
         '/home': (context) => const HomePage(),
         '/sign_up': (context) => const SignUpPage(),
         '/add_vocab': (context) => const AddVocab(),
+        '/pick_image': (context) => const PickImage(),
       },
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
