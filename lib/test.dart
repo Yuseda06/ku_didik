@@ -1,9 +1,8 @@
-import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:ku_didik/common_widgets/didik_app_bar.dart';
 import 'package:ku_didik/features/lesson/controllers/firebase_controller.dart';
-// Replace with the actual path
 import 'package:translator/translator.dart' as translator_package;
 
 class AddVocab extends StatefulWidget {
@@ -13,12 +12,22 @@ class AddVocab extends StatefulWidget {
   State<AddVocab> createState() => _AddVocabState();
 }
 
-final firebaseController = FirebaseController(); // Create an instance
-final databaseReference =
-    FirebaseDatabase.instance.ref('users/Irfan Yusri/english/vocab/words');
+final firebaseController = FirebaseController();
 
 class _AddVocabState extends State<AddVocab> {
   final TextEditingController _vocabController = TextEditingController();
+  final DatabaseReference _databaseReference = FirebaseDatabase.instance
+      .ref()
+      .child(
+          'vocabulary'); // Replace with your Firebase database reference path
+
+  List<Map<String, dynamic>> _vocabList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchVocabulary(); // Load initial data from Firebase
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,26 +41,14 @@ class _AddVocabState extends State<AddVocab> {
       appBar: RoundedAppBar(
         title: 'Adding More Vocab',
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: FirebaseAnimatedList(
-                query: databaseReference,
-                itemBuilder: (context, snapshot, index, animation) {
-                  // Get the word (key) from the current snapshot and assert it's not null
-                  String word = snapshot.key!;
-
-                  // Get the meaning from the child 'meaning' and handle null case
-                  String meaning =
-                      snapshot.child('meaning').value?.toString() ?? "";
-
-                  return ListTile(
-                    title: Text(word),
-                    subtitle: Text(meaning),
-                  );
-                }),
-          )
-        ],
+      body: ListView.builder(
+        itemCount: _vocabList.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text(_vocabList[index]['word']),
+            subtitle: Text(_vocabList[index]['meaning']),
+          );
+        },
       ),
     );
   }
@@ -129,5 +126,42 @@ class _AddVocabState extends State<AddVocab> {
         await translator.translate(englishWord, from: 'en', to: 'ms');
 
     return translation.text;
+  }
+
+  Future<void> _fetchVocabulary() async {
+    _databaseReference.onValue.listen((event) {
+      _vocabList.clear();
+      if (event.snapshot.value != null) {
+        Map<dynamic, dynamic> values =
+            (event.snapshot.value as Map<dynamic, dynamic>);
+        values.forEach((key, value) {
+          _vocabList.add({
+            'word': value['word'],
+            'meaning': value['meaning'],
+          });
+        });
+      }
+      setState(() {});
+    });
+  }
+}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Your App Title',
+      theme: ThemeData(
+        primarySwatch: Colors.teal,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      home: AddVocab(),
+    );
   }
 }
