@@ -1,9 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
-import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:ku_didik/common_widgets/didik_app_bar.dart';
 import 'package:ku_didik/features/lesson/controllers/firebase_controller.dart';
-// Replace with the actual path
 import 'package:translator/translator.dart' as translator_package;
 
 class AddVocab extends StatefulWidget {
@@ -39,33 +39,23 @@ class _AddVocabState extends State<AddVocab> {
               query: databaseReference.orderByChild('timestamp'),
               itemBuilder: (context, snapshot, index, animation) {
                 String word = snapshot.child('word').value?.toString() ?? "";
-
-                // Get the meaning from the child 'meaning' and handle null case
                 String meaning =
                     snapshot.child('meaning').value?.toString() ?? "";
 
-                return ListTile(
-                  title: Text(word),
-                  subtitle: Text(meaning),
-                  leading: Container(
-                    margin: const EdgeInsets.only(top: 10.0),
-                    child:
-                        const Icon(Icons.circle, color: Colors.teal, size: 14),
-                  ),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
-                    onPressed: () {
-                      // Call handleDeleteWord from FirebaseController
-                      firebaseController.handleDeleteWord(
-                        word,
-                        'Irfan Yusri', // Replace with the actual username
-                      );
-                    },
-                  ),
+                return CarouselItem(
+                  word: word,
+                  meaning: meaning,
+                  onDelete: () {
+                    // Call handleDeleteWord from FirebaseController
+                    firebaseController.handleDeleteWord(
+                      word,
+                      'Irfan Yusri', // Replace with the actual username
+                    );
+                  },
                 );
               },
             ),
-          )
+          ),
         ],
       ),
     );
@@ -145,5 +135,47 @@ class _AddVocabState extends State<AddVocab> {
         await translator.translate(englishWord, from: 'en', to: 'ms');
 
     return translation.text;
+  }
+}
+
+class CarouselItem extends StatelessWidget {
+  final String word;
+  final String meaning;
+  final VoidCallback onDelete;
+
+  const CarouselItem({
+    required this.word,
+    required this.meaning,
+    required this.onDelete,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CarouselSlider(
+      options: CarouselOptions(
+        height: 100,
+        enlargeCenterPage: true,
+      ),
+      items: [
+        Card(
+          child: Column(
+            children: [
+              ListTile(
+                title: Text(word),
+                subtitle: Text(meaning),
+                leading: Container(
+                  margin: const EdgeInsets.only(top: 10.0),
+                  child: const Icon(Icons.circle, color: Colors.teal, size: 14),
+                ),
+                trailing: IconButton(
+                  icon: const Icon(Icons.delete, color: Colors.red),
+                  onPressed: onDelete,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 }
