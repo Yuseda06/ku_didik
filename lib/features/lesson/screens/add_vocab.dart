@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ku_didik/common_widgets/didik_app_bar.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:translator/translator.dart' as translator_package;
 
 class AddVocab extends StatefulWidget {
   const AddVocab({Key? key}) : super(key: key);
@@ -80,32 +81,51 @@ class _AddVocabState extends State<AddVocab> {
                 ),
                 const SizedBox(height: 16.0),
                 ElevatedButton(
-                    onPressed: () {
-                      // Handle adding vocab here
-                      String enteredVocab = _vocabController.text;
-                      // TODO: Add your logic to handle the vocab
-                      print('Added Vocab: $enteredVocab');
+                  onPressed: () async {
+                    // Handle adding vocab here
+                    String enteredVocab = _vocabController.text;
 
-                      // Close the modal
-                      Navigator.pop(context);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      fixedSize: Size.fromHeight(40.0),
-                      backgroundColor:
-                          Colors.teal, // Set your desired background color
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
+                    // Translate to Bahasa Malaysia
+                    String bahasaMalaysiaMeaning =
+                        await _translateToBahasaMalaysia(enteredVocab);
+
+                    // TODO: Add your logic to handle the vocab and translated meaning
+                    print('Added Vocab: $enteredVocab');
+                    print('Translated Meaning: $bahasaMalaysiaMeaning');
+
+                    // Close the modal
+                    Navigator.pop(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    fixedSize: Size.fromHeight(40.0),
+                    backgroundColor:
+                        Colors.teal, // Set your desired background color
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
                     ),
-                    child: Text(
-                      'Add',
-                      style: TextStyle(color: Colors.white, fontSize: 16.0),
-                    )),
+                  ),
+                  child: Text(
+                    'Add',
+                    style: TextStyle(color: Colors.white, fontSize: 16.0),
+                  ),
+                ),
               ],
             ),
           ),
         );
       },
     );
+  }
+
+  Future<String> _translateToBahasaMalaysia(String englishWord) async {
+    // Create a translator instance
+    final translator_package.GoogleTranslator translator =
+        translator_package.GoogleTranslator();
+
+    // Translate to Bahasa Malaysia
+    var translation =
+        await translator.translate(englishWord, from: 'en', to: 'ms');
+
+    return translation.text;
   }
 }
