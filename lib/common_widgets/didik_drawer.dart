@@ -36,6 +36,9 @@ class _DidikDrawerState extends State<DidikDrawer> {
                   color: Color.fromARGB(255, 241, 182, 4),
                   borderRadius: BorderRadius.only(
                     bottomRight: Radius.circular(60.0),
+                    bottomLeft: Radius.circular(10.0),
+                    topLeft: Radius.circular(10.0),
+                    topRight: Radius.circular(10.0),
                   ),
                 ),
                 child: GestureDetector(
