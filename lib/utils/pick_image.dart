@@ -120,7 +120,9 @@ class _PickImageState extends State<PickImage> {
       selectedImage = File(returnImage.path);
       _image = File(returnImage.path).readAsBytesSync();
     });
-    Navigator.of(context).pop(); //close the model sheet
+    Provider.of<ProfileProvider>(context, listen: false)
+        .setImage(selectedImage);
+    Navigator.of(context).pop();
   }
 
   // Camera

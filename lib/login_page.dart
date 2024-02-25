@@ -55,7 +55,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   child: Image.asset(
                     'assets/images/login.gif',
-                    height: 250,
+                    height: 300,
                     width: MediaQuery.of(context).size.width * 1.0,
                     fit: BoxFit.cover,
                   ),
