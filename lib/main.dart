@@ -21,15 +21,18 @@ void main() async {
   String appId = dotenv.env['APP_ID'] ?? '';
   String messagingSenderId = dotenv.env['MESSAGING_SENDER_ID'] ?? '';
   String projectId = dotenv.env['PROJECT_ID'] ?? '';
+  String databaseUrl = dotenv.env['DATABASE_URL'] ?? '';
 
   WidgetsFlutterBinding.ensureInitialized();
   Platform.isAndroid
       ? await Firebase.initializeApp(
           options: FirebaseOptions(
-              apiKey: apiKey,
-              appId: appId,
-              messagingSenderId: messagingSenderId,
-              projectId: projectId))
+          apiKey: apiKey,
+          appId: appId,
+          messagingSenderId: messagingSenderId,
+          projectId: projectId,
+          databaseURL: databaseUrl,
+        ))
       : await Firebase.initializeApp();
 
   runApp(
