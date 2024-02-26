@@ -310,15 +310,15 @@ class CarouselItem extends StatelessWidget {
             Positioned(
               bottom: 5.0,
               right: 5.0,
-              child: Icon(Icons.delete, color: Colors.red, size: 40.0),
+              child: IconButton(
+                icon: Icon(Icons.delete, color: Colors.red, size: 40.0),
+                onPressed: onDelete,
+              ),
             ),
             Positioned(
               top: 5.0,
               right: 0.0,
-              child: IconButton(
-                icon: Icon(Icons.volume_up, color: Colors.teal, size: 20.0),
-                onPressed: onDelete,
-              ),
+              child: Icon(Icons.volume_up, color: Colors.teal, size: 20.0),
             ),
           ],
         ),
