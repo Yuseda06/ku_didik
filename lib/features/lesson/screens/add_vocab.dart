@@ -139,31 +139,42 @@ class _AddVocabState extends State<AddVocab> {
   }
 
   Future<List<Word>> _getData(String username) async {
-    DatabaseReference userDatabaseReference =
-        FirebaseDatabase.instance.ref('users/$username/english/vocab/words');
+    try {
+      DatabaseReference userDatabaseReference =
+          FirebaseDatabase.instance.ref('users/$username/english/vocab/words');
 
-    DatabaseEvent event =
-        await userDatabaseReference.orderByChild('timestamp').once();
-    DataSnapshot snapshot = event.snapshot;
-    List<Word> words = [];
+      DatabaseEvent event =
+          await userDatabaseReference.orderByChild('timestamp').once();
+      DataSnapshot snapshot = event.snapshot;
+      List<Word> words = [];
 
-    Map<dynamic, dynamic> values =
-        (snapshot.value as Map<dynamic, dynamic>) ?? {};
+      Map<dynamic, dynamic> values =
+          (snapshot.value as Map<dynamic, dynamic>) ?? {};
 
-    // Sort the values based on timestamp
-    List<MapEntry<dynamic, dynamic>> sortedValues = values.entries.toList()
-      ..sort((a, b) =>
-          (b.value['timestamp'] ?? 0).compareTo(a.value['timestamp'] ?? 0));
+      // Sort the values based on timestamp
+      List<MapEntry<dynamic, dynamic>> sortedValues = values.entries.toList()
+        ..sort((a, b) =>
+            (b.value['timestamp'] ?? 0).compareTo(a.value['timestamp'] ?? 0));
 
-    for (var entry in sortedValues) {
-      words.add(Word(
-        word: entry.value['word'],
-        meaning: entry.value['meaning'],
-        key: entry.key,
-      ));
+      for (var entry in sortedValues) {
+        words.add(Word(
+          word: entry.value['word'],
+          meaning: entry.value['meaning'],
+          key: entry.key,
+        ));
+      }
+
+      return words;
+    } catch (error) {
+      print('Error retrieving data: $error');
+      // Handle the error as needed
+      return [
+        Word(
+            word: "Your Vocab is Zero",
+            meaning: 'Please Add Some',
+            key: "762431")
+      ]; // Return an empty list or handle it in a way that makes sense for your application
     }
-
-    return words;
   }
 
   Future<String> _translateToBahasaMalaysia(String englishWord) async {
