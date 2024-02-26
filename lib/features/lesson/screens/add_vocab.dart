@@ -5,6 +5,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:ku_didik/common_widgets/didik_app_bar.dart';
 import 'package:ku_didik/test.dart';
+import 'package:ku_didik/utils/theme/username_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:translator/translator.dart' as translator_package;
 
 void main() {
@@ -27,15 +29,15 @@ class AddVocab extends StatefulWidget {
   State<AddVocab> createState() => _AddVocabState();
 }
 
-final databaseReference =
-    FirebaseDatabase.instance.ref('users/Irfan Yusri/english/vocab/words');
-
 class _AddVocabState extends State<AddVocab> {
   final TextEditingController _vocabController = TextEditingController();
   final _refreshController = StreamController<void>.broadcast();
 
   @override
   Widget build(BuildContext context) {
+    final usernameProvider = Provider.of<UsernameProvider>(context);
+    String username = usernameProvider.username ?? '';
+
     return Scaffold(
       appBar: RoundedAppBar(title: 'Add Your Vocabulary'),
       body: Column(
@@ -74,7 +76,7 @@ class _AddVocabState extends State<AddVocab> {
                   );
                 }),
           ),
-          _buildAddVocabSection(),
+          _buildAddVocabSection(username),
         ],
       ),
     );
@@ -85,7 +87,7 @@ class _AddVocabState extends State<AddVocab> {
     _refreshController.add(null);
   }
 
-  Widget _buildAddVocabSection() {
+  Widget _buildAddVocabSection(username) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -106,7 +108,7 @@ class _AddVocabState extends State<AddVocab> {
               await firebaseController.handleAddWord(
                 enteredVocab,
                 bahasaMalaysiaMeaning,
-                'Irfan Yusri',
+                username,
               );
               // Clear the text field
               _refresh();
@@ -130,19 +132,26 @@ class _AddVocabState extends State<AddVocab> {
   }
 
   Future<List<Word>> _getData() async {
-    DatabaseEvent event = await databaseReference.once();
+    DatabaseEvent event =
+        await databaseReference.orderByChild('timestamp').once();
     DataSnapshot snapshot = event.snapshot;
     List<Word> words = [];
 
     Map<dynamic, dynamic> values =
         (snapshot.value as Map<dynamic, dynamic>) ?? {};
-    values.forEach((key, value) {
+
+    // Sort the values based on timestamp
+    List<MapEntry<dynamic, dynamic>> sortedValues = values.entries.toList()
+      ..sort((a, b) =>
+          (b.value['timestamp'] ?? 0).compareTo(a.value['timestamp'] ?? 0));
+
+    for (var entry in sortedValues) {
       words.add(Word(
-        word: value['word'],
-        meaning: value['meaning'],
-        key: key,
+        word: entry.value['word'],
+        meaning: entry.value['meaning'],
+        key: entry.key,
       ));
-    });
+    }
 
     return words;
   }
