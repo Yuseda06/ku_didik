@@ -66,7 +66,7 @@ class _AddVocabState extends State<AddVocab> {
                               word: word.word,
                               meaning: word.meaning,
                               onDelete: () {
-                                _handleDeleteWord(word.key);
+                                _handleDeleteWord(username, word.key);
                               },
                             );
                           }).toList(),
@@ -178,10 +178,19 @@ class _AddVocabState extends State<AddVocab> {
     return translation.text;
   }
 
-  void _handleDeleteWord(String word) {
-    databaseReference.child(word).remove();
-    setState(() {
-      // Refresh the UI after deleting a word
+  void _handleDeleteWord(String username, String word) {
+    print('username: $username');
+    DatabaseReference userDatabaseReference =
+        FirebaseDatabase.instance.ref('users/$username/english/vocab/words');
+
+    userDatabaseReference.child(word).remove().then((_) {
+      // Successfully deleted
+      setState(() {
+        // Refresh the UI after deleting a word
+      });
+    }).catchError((error) {
+      print('Error deleting word: $error');
+      // Handle the error as needed
     });
   }
 }
