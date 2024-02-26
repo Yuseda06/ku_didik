@@ -47,7 +47,7 @@ class _AddVocabState extends State<AddVocab> {
                 stream: _refreshController.stream,
                 builder: (context, snapshot) {
                   return FutureBuilder(
-                    future: _getData(),
+                    future: _getData(username),
                     builder: (context, AsyncSnapshot<List<Word>> snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return Center(child: CircularProgressIndicator());
@@ -131,9 +131,12 @@ class _AddVocabState extends State<AddVocab> {
     );
   }
 
-  Future<List<Word>> _getData() async {
+  Future<List<Word>> _getData(String username) async {
+    DatabaseReference userDatabaseReference =
+        FirebaseDatabase.instance.ref('users/$username/english/vocab/words');
+
     DatabaseEvent event =
-        await databaseReference.orderByChild('timestamp').once();
+        await userDatabaseReference.orderByChild('timestamp').once();
     DataSnapshot snapshot = event.snapshot;
     List<Word> words = [];
 
@@ -232,12 +235,21 @@ class CarouselItem extends StatelessWidget {
           ),
         ],
       ),
-      child: ListTile(
-        title: Text(capitalize(word)),
-        subtitle: Text(capitalize(meaning)),
-        trailing: IconButton(
-          icon: Icon(Icons.delete, color: Colors.red),
-          onPressed: onDelete,
+      child: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: ListTile(
+          title: Text(
+            capitalize(word),
+            style: TextStyle(color: Colors.black54, fontSize: 30),
+          ),
+          subtitle: Text(
+            capitalize(meaning),
+            style: TextStyle(color: Colors.black54, fontSize: 20),
+          ),
+          trailing: IconButton(
+            icon: Icon(Icons.delete, color: Colors.red, size: 40.0),
+            onPressed: onDelete,
+          ),
         ),
       ),
     );

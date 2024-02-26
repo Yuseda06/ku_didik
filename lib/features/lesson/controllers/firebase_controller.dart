@@ -31,7 +31,7 @@ class FirebaseController {
     try {
       // Construct the path to the words in the database
       String path = 'users/$username/english/vocab/words';
-
+      print('username: $username');
       // Get a reference to the words in the database and push a new child
       DatabaseReference wordsRef = FirebaseDatabase.instance.ref(path);
       DatabaseReference newWordRef = wordsRef.push();
