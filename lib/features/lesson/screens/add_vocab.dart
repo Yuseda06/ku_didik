@@ -8,6 +8,7 @@ import 'package:ku_didik/test.dart';
 import 'package:ku_didik/utils/theme/username_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:translator/translator.dart' as translator_package;
+import 'package:flutter_tts/flutter_tts.dart';
 
 void main() {
   runApp(MyApp());
@@ -227,6 +228,13 @@ class Word {
   }
 }
 
+void _speakWord(word) {
+  FlutterTts flutterTts = FlutterTts();
+  flutterTts
+      .setLanguage("en-US"); // Set language to English or your desired language
+  flutterTts.speak(word);
+}
+
 String capitalize(String s) {
   if (s == null || s.isEmpty) {
     return s;
@@ -263,18 +271,28 @@ class CarouselItem extends StatelessWidget {
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(15.0),
+        padding: const EdgeInsets.all(5.0),
         child: ListTile(
-          title: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 0, 0, 15),
+          title: TextButton(
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.transparent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+            ),
+            onPressed: () {
+              _speakWord(word);
+            },
             child: Text(
               capitalize(word),
-              style: TextStyle(color: Colors.black54, fontSize: 30),
+              style: TextStyle(
+                  color: const Color.fromARGB(255, 138, 106, 7), fontSize: 30),
             ),
           ),
           subtitle: Text(
             capitalize(meaning),
-            style: TextStyle(color: Colors.black54, fontSize: 20),
+            style: TextStyle(
+                color: const Color.fromARGB(255, 138, 106, 7), fontSize: 20),
           ),
           trailing: IconButton(
             icon: Icon(Icons.delete, color: Colors.red, size: 40.0),

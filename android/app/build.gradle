@@ -43,10 +43,10 @@ android {
         applicationId "com.ku_didik"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion 25
+        minSdkVersion 21
         targetSdkVersion flutter.targetSdkVersion
-        versionCode 11
-        versionName '1.0.11'
+        versionCode 12
+        versionName '1.0.12'
     }
 
     buildTypes {

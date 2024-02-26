@@ -53,6 +53,7 @@ dependencies:
   image: ^4.1.7
   translator: ^1.0.0
   carousel_slider: ^4.2.1
+  flutter_tts: ^3.8.5
 
 dev_dependencies:
   flutter_test:
