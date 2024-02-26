@@ -230,8 +230,8 @@ class Word {
 
 void _speakWord(word) {
   FlutterTts flutterTts = FlutterTts();
-  flutterTts
-      .setLanguage("en-US"); // Set language to English or your desired language
+  flutterTts.setLanguage("en-US");
+  // Set language to English or your desired language
   flutterTts.speak(word);
 }
 
@@ -272,32 +272,58 @@ class CarouselItem extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.all(5.0),
-        child: ListTile(
-          title: TextButton(
-            style: TextButton.styleFrom(
-              backgroundColor: Colors.transparent,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0),
+        child: Stack(
+          children: [
+            ListTile(
+              title: TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.transparent,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                ),
+                onPressed: () {
+                  _speakWord(word);
+                },
+                child: Text(
+                  capitalize(word),
+                  style: TextStyle(
+                    color: const Color.fromARGB(255, 138, 106, 7),
+                    fontSize: 30,
+                  ),
+                ),
+              ),
+              subtitle: SizedBox(
+                width: 250, // Set the maximum width as needed
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(8.0, 20.0, 0.0, 0.0),
+                  child: Text(
+                    capitalize(meaning),
+                    style: TextStyle(
+                      color: Color.fromARGB(255, 96, 96, 94),
+                      fontSize: 25,
+                    ),
+                  ),
+                ),
               ),
             ),
-            onPressed: () {
-              _speakWord(word);
-            },
-            child: Text(
-              capitalize(word),
-              style: TextStyle(
-                  color: const Color.fromARGB(255, 138, 106, 7), fontSize: 30),
+            Positioned(
+              bottom: 5.0,
+              right: 5.0,
+              child: IconButton(
+                icon: Icon(Icons.delete, color: Colors.red, size: 40.0),
+                onPressed: onDelete,
+              ),
             ),
-          ),
-          subtitle: Text(
-            capitalize(meaning),
-            style: TextStyle(
-                color: const Color.fromARGB(255, 138, 106, 7), fontSize: 20),
-          ),
-          trailing: IconButton(
-            icon: Icon(Icons.delete, color: Colors.red, size: 40.0),
-            onPressed: onDelete,
-          ),
+            Positioned(
+              top: 5.0,
+              right: 0.0,
+              child: IconButton(
+                icon: Icon(Icons.volume_up, color: Colors.teal, size: 20.0),
+                onPressed: onDelete,
+              ),
+            ),
+          ],
         ),
       ),
     );
