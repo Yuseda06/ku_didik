@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:ku_didik/common_widgets/didik_app_bar.dart';
 import 'package:ku_didik/features/lesson/controllers/firebase_controller.dart';
 import 'package:translator/translator.dart' as translator_package;
@@ -12,22 +13,12 @@ class AddVocab extends StatefulWidget {
   State<AddVocab> createState() => _AddVocabState();
 }
 
-final firebaseController = FirebaseController();
+final firebaseController = FirebaseController(); // Create an instance
+final databaseReference =
+    FirebaseDatabase.instance.ref('users/Irfan Yusri/english/vocab/words');
 
 class _AddVocabState extends State<AddVocab> {
   final TextEditingController _vocabController = TextEditingController();
-  final DatabaseReference _databaseReference = FirebaseDatabase.instance
-      .ref()
-      .child(
-          'vocabulary'); // Replace with your Firebase database reference path
-
-  List<Map<String, dynamic>> _vocabList = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchVocabulary(); // Load initial data from Firebase
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,14 +32,32 @@ class _AddVocabState extends State<AddVocab> {
       appBar: RoundedAppBar(
         title: 'Adding More Vocab',
       ),
-      body: ListView.builder(
-        itemCount: _vocabList.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(_vocabList[index]['word']),
-            subtitle: Text(_vocabList[index]['meaning']),
-          );
-        },
+      body: Column(
+        children: [
+          Expanded(
+            child: FirebaseAnimatedList(
+              query: databaseReference.orderByChild('timestamp'),
+              itemBuilder: (context, snapshot, index, animation) {
+                String word = snapshot.child('word').value?.toString() ?? "";
+                String meaning =
+                    snapshot.child('meaning').value?.toString() ?? "";
+                String wordKey = snapshot.key ?? ""; // Get the unique key
+
+                return CarouselItem(
+                  word: word,
+                  meaning: meaning,
+                  onDelete: () {
+                    // Call handleDeleteWord from FirebaseController
+                    firebaseController.handleDeleteWord(
+                      wordKey,
+                      'Irfan Yusri', // Replace with the actual username
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -90,7 +99,8 @@ class _AddVocabState extends State<AddVocab> {
                     await firebaseController.handleAddWord(
                       enteredVocab,
                       bahasaMalaysiaMeaning,
-                      'Irfan Yusri', // Replace with the actual username
+                      'Irfan Yusri',
+                      // Replace with the actual username
                     );
 
                     // Close the modal
@@ -127,41 +137,46 @@ class _AddVocabState extends State<AddVocab> {
 
     return translation.text;
   }
-
-  Future<void> _fetchVocabulary() async {
-    _databaseReference.onValue.listen((event) {
-      _vocabList.clear();
-      if (event.snapshot.value != null) {
-        Map<dynamic, dynamic> values =
-            (event.snapshot.value as Map<dynamic, dynamic>);
-        values.forEach((key, value) {
-          _vocabList.add({
-            'word': value['word'],
-            'meaning': value['meaning'],
-          });
-        });
-      }
-      setState(() {});
-    });
-  }
 }
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(MyApp());
-}
+class CarouselItem extends StatelessWidget {
+  final String word;
+  final String meaning;
+  final VoidCallback onDelete;
 
-class MyApp extends StatelessWidget {
+  const CarouselItem({
+    required this.word,
+    required this.meaning,
+    required this.onDelete,
+  });
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Your App Title',
-      theme: ThemeData(
-        primarySwatch: Colors.teal,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+    return CarouselSlider(
+      options: CarouselOptions(
+        height: 100,
+        enlargeCenterPage: true,
       ),
-      home: AddVocab(),
+      items: [
+        Card(
+          child: Column(
+            children: [
+              ListTile(
+                title: Text(word),
+                subtitle: Text(meaning),
+                leading: Container(
+                  margin: const EdgeInsets.only(top: 10.0),
+                  child: const Icon(Icons.circle, color: Colors.teal, size: 14),
+                ),
+                trailing: IconButton(
+                  icon: const Icon(Icons.delete, color: Colors.red),
+                  onPressed: onDelete,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
