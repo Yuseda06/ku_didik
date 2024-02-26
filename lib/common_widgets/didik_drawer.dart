@@ -101,6 +101,7 @@ class _DidikDrawerState extends State<DidikDrawer> {
               ),
               onPressed: () {
                 FirebaseAuth.instance.signOut();
+                Navigator.pushNamed(context, '/sign_in');
               },
               child: Text('Sign Out',
                   style: TextStyle(color: Colors.white, fontSize: 18)),

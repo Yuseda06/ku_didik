@@ -65,13 +65,13 @@ class _SignUpPageState extends State<SignUpPage> {
             const SizedBox(
               height: 15,
             ),
-            DidikInputType(
-              controller: profileUrlController,
-              hintText: 'Profile URL',
-            ),
-            const SizedBox(
-              height: 15,
-            ),
+            // DidikInputType(
+            //   controller: profileUrlController,
+            //   hintText: 'Profile URL',
+            // ),
+            // const SizedBox(
+            //   height: 15,
+            // ),
             DidikInputType(
               controller: emailController,
               hintText: 'Email Address',

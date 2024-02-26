@@ -289,19 +289,19 @@ class CarouselItem extends StatelessWidget {
                   capitalize(word),
                   style: TextStyle(
                     color: const Color.fromARGB(255, 138, 106, 7),
-                    fontSize: 30,
+                    fontSize: 23,
                   ),
                 ),
               ),
               subtitle: SizedBox(
                 width: 250, // Set the maximum width as needed
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(8.0, 20.0, 0.0, 0.0),
+                  padding: const EdgeInsets.fromLTRB(8.0, 15.0, 0.0, 0.0),
                   child: Text(
                     capitalize(meaning),
                     style: TextStyle(
                       color: Color.fromARGB(255, 96, 96, 94),
-                      fontSize: 25,
+                      fontSize: 20,
                     ),
                   ),
                 ),
@@ -316,9 +316,9 @@ class CarouselItem extends StatelessWidget {
               ),
             ),
             Positioned(
-              top: 5.0,
-              right: 0.0,
-              child: Icon(Icons.volume_up, color: Colors.teal, size: 20.0),
+              top: 10.0,
+              right: 6.0,
+              child: Icon(Icons.volume_up, color: Colors.teal, size: 25.0),
             ),
           ],
         ),

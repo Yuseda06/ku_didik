@@ -23,7 +23,7 @@ class _PickImageState extends State<PickImage> {
       appBar: AppBar(
         title: const Text("Pick Image"),
       ),
-      backgroundColor: Colors.deepPurple[100],
+      backgroundColor: Color.fromARGB(255, 252, 247, 231),
       body: Center(
         child: Stack(
           children: [
@@ -41,7 +41,7 @@ class _PickImageState extends State<PickImage> {
               child: IconButton(
                 icon: const Icon(
                   Icons.add_a_photo,
-                  color: Colors.white,
+                  color: Colors.teal,
                   size: 50,
                 ),
                 onPressed: () {
@@ -57,7 +57,7 @@ class _PickImageState extends State<PickImage> {
 
   void showImagePickerOption(BuildContext context) {
     showModalBottomSheet(
-      backgroundColor: Colors.blue[100],
+      backgroundColor: Color.fromARGB(255, 218, 250, 246),
       context: context,
       builder: (builder) {
         return Padding(
@@ -78,8 +78,11 @@ class _PickImageState extends State<PickImage> {
                           Icon(
                             Icons.image,
                             size: 70,
+                            color: Colors.teal,
                           ),
-                          Text("Gallery"),
+                          Text("Gallery",
+                              style: TextStyle(
+                                  fontSize: 20, color: Colors.black54)),
                         ],
                       ),
                     ),
@@ -94,10 +97,13 @@ class _PickImageState extends State<PickImage> {
                       child: Column(
                         children: [
                           Icon(
+                            color: Colors.teal,
                             Icons.camera_alt,
                             size: 70,
                           ),
-                          Text("Camera"),
+                          Text("Camera",
+                              style: TextStyle(
+                                  fontSize: 20, color: Colors.black54)),
                         ],
                       ),
                     ),
