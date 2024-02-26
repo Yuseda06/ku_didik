@@ -121,9 +121,16 @@ class _AddVocabState extends State<AddVocab> {
                 borderRadius: BorderRadius.circular(20.0),
               ),
             ),
-            child: Text(
-              'Add',
-              style: TextStyle(color: Colors.white, fontSize: 16.0),
+            child: Container(
+              width: double.infinity,
+              child: Text(
+                'Add',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16.0,
+                ),
+                textAlign: TextAlign.center,
+              ),
             ),
           ),
         ],
@@ -238,9 +245,12 @@ class CarouselItem extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(15.0),
         child: ListTile(
-          title: Text(
-            capitalize(word),
-            style: TextStyle(color: Colors.black54, fontSize: 30),
+          title: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 0, 0, 15),
+            child: Text(
+              capitalize(word),
+              style: TextStyle(color: Colors.black54, fontSize: 30),
+            ),
           ),
           subtitle: Text(
             capitalize(meaning),
