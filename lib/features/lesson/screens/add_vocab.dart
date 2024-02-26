@@ -55,6 +55,7 @@ class _AddVocabState extends State<AddVocab> {
                         List<Word> words = snapshot.data!;
                         return CarouselSlider(
                           options: CarouselOptions(
+                            enableInfiniteScroll: false,
                             height: 400.0,
                             enlargeCenterPage: true,
                           ),
@@ -187,6 +188,13 @@ class Word {
   }
 }
 
+String capitalize(String s) {
+  if (s == null || s.isEmpty) {
+    return s;
+  }
+  return s[0].toUpperCase() + s.substring(1);
+}
+
 class CarouselItem extends StatelessWidget {
   final String word;
   final String meaning;
@@ -200,26 +208,28 @@ class CarouselItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Column(
-        children: [
-          ListTile(
-            title: Text(word),
-            subtitle: Text(meaning),
-            trailing: IconButton(
-              icon: Icon(Icons.delete, color: Colors.red),
-              onPressed: onDelete,
-            ),
+    return Container(
+      margin:
+          EdgeInsets.all(8.0), // Add margin for better visibility of the shadow
+      decoration: BoxDecoration(
+        color: Colors.white, // Set the background color of the card
+        borderRadius:
+            BorderRadius.circular(16.0), // Adjust the radius as needed
+        boxShadow: [
+          BoxShadow(
+            color: const Color.fromARGB(255, 234, 234, 233),
+            blurRadius: 10.0, // Adjust the blur radius as needed
+            spreadRadius: 5.0, // Adjust the spread radius as needed
           ),
-          if (word.isEmpty && meaning.isEmpty)
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                'Please add a word and its meaning.',
-                style: TextStyle(color: Colors.grey),
-              ),
-            ),
         ],
+      ),
+      child: ListTile(
+        title: Text(capitalize(word)),
+        subtitle: Text(capitalize(meaning)),
+        trailing: IconButton(
+          icon: Icon(Icons.delete, color: Colors.red),
+          onPressed: onDelete,
+        ),
       ),
     );
   }
