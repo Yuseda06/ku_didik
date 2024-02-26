@@ -53,8 +53,11 @@ class _AddVocabState extends State<AddVocab> {
                         return Center(child: Text('Error: ${snapshot.error}'));
                       } else {
                         List<Word> words = snapshot.data!;
+
                         return CarouselSlider(
                           options: CarouselOptions(
+                            aspectRatio: 2.0,
+                            enableInfiniteScroll: false,
                             height: 400.0,
                             enlargeCenterPage: true,
                           ),
@@ -187,6 +190,13 @@ class Word {
   }
 }
 
+String capitalize(String s) {
+  if (s == null || s.isEmpty) {
+    return s;
+  }
+  return s[0].toUpperCase() + s.substring(1);
+}
+
 class CarouselItem extends StatelessWidget {
   final String word;
   final String meaning;
@@ -200,27 +210,38 @@ class CarouselItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Column(
-        children: [
-          ListTile(
-            title: Text(word),
-            subtitle: Text(meaning),
-            trailing: IconButton(
-              icon: Icon(Icons.delete, color: Colors.red),
-              onPressed: onDelete,
-            ),
+    return Container(
+      margin: EdgeInsets.all(8.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16.0),
+        boxShadow: [
+          BoxShadow(
+            color: const Color.fromARGB(255, 243, 242, 242),
+            blurRadius: 10.0,
+            spreadRadius: 5.0,
           ),
-          if (word.isEmpty && meaning.isEmpty)
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                'Please add a word and its meaning.',
-                style: TextStyle(color: Colors.grey),
-              ),
-            ),
         ],
       ),
+      child: word.isEmpty && meaning.isEmpty
+          ? Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'No words added yet!',
+                style: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            )
+          : ListTile(
+              title: Text(capitalize(word)),
+              subtitle: Text(capitalize(meaning)),
+              trailing: IconButton(
+                icon: Icon(Icons.delete, color: Colors.red),
+                onPressed: onDelete,
+              ),
+            ),
     );
   }
 }

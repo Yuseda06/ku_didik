@@ -180,3 +180,29 @@ class CarouselItem extends StatelessWidget {
     );
   }
 }
+
+
+ @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Column(
+        children: [
+          ListTile(
+            title: Text(word),
+            subtitle: Text(meaning),
+            trailing: IconButton(
+              icon: Icon(Icons.delete, color: Colors.red),
+              onPressed: onDelete,
+            ),
+          ),
+          if (word.isEmpty && meaning.isEmpty)
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'Please add a word and its meaning.',
+                style: TextStyle(color: Colors.grey),
+              ),
+            ),
+        ],
+      ),
+    );
