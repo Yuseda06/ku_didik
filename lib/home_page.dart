@@ -191,20 +191,20 @@ class _HomePageState extends State<HomePage> {
                   List<Map> items =
                       document.map((e) => e.data() as Map).toList();
 
-                  return SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 150),
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 30, bottom: 20),
-                            child: Text('Leaderboard',
-                                style: TextStyle(
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.amber)),
-                          ),
-                          Container(
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 150),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 30, bottom: 20),
+                          child: Text('Leaderboard',
+                              style: TextStyle(
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.amber)),
+                        ),
+                        Expanded(
+                          child: Container(
                             height: MediaQuery.of(context).size.height,
                             width: MediaQuery.of(context).size.width,
                             child: ListView.builder(
@@ -277,8 +277,8 @@ class _HomePageState extends State<HomePage> {
                               },
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   );
                   ;
