@@ -103,7 +103,7 @@ class _HomePageState extends State<HomePage> {
                               padding: const EdgeInsets.fromLTRB(15, 20, 0, 0),
                               child: IconButton(
                                 icon: const Icon(
-                                  Icons.menu,
+                                  Icons.sort_rounded,
                                   color: Colors.white,
                                   size: 42,
                                 ),
