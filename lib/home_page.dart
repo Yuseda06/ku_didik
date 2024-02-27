@@ -201,7 +201,7 @@ class _HomePageState extends State<HomePage> {
                               style: TextStyle(
                                   fontSize: 30,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.amber)),
+                                  color: Colors.black45)),
                         ),
                         Expanded(
                           child: Container(
@@ -244,10 +244,20 @@ class _HomePageState extends State<HomePage> {
                                             fontWeight: FontWeight.bold,
                                             fontSize: 20),
                                       ),
-                                      subtitle: Text('Score'),
+                                      subtitle: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Icon(
+                                            Icons.monetization_on,
+                                            color: Colors.amber,
+                                            size: 25,
+                                          ),
+                                        ],
+                                      ),
                                       trailing: Padding(
                                         padding: const EdgeInsets.fromLTRB(
-                                            0, 0, 0, 0),
+                                            4, 0, 4, 0),
                                         child: Container(
                                           height: 100,
                                           decoration: BoxDecoration(
@@ -257,7 +267,7 @@ class _HomePageState extends State<HomePage> {
                                           ),
                                           child: Padding(
                                             padding: const EdgeInsets.fromLTRB(
-                                                6, 0, 6, 0),
+                                                4, 4, 4, 4),
                                             child: ClipOval(
                                               clipBehavior:
                                                   Clip.antiAliasWithSaveLayer,

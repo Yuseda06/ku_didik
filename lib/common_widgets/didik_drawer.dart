@@ -78,13 +78,27 @@ class _DidikDrawerState extends State<DidikDrawer> {
             ),
           ),
           ListTile(
-            title: Text('Learn Vocabulary'),
+            title: Row(
+              children: [
+                Icon(Icons.spoke_outlined, color: Colors.black45),
+                SizedBox(width: 10),
+                Text('Learn Vocabulary',
+                    style: TextStyle(fontSize: 18, color: Colors.teal[600])),
+              ],
+            ),
             onTap: () {
               Navigator.pushNamed(context, '/add_vocab');
             },
           ),
           ListTile(
-            title: Text('Test Your Vocabulary'),
+            title: Row(
+              children: [
+                Icon(Icons.fitbit_outlined, color: Colors.black45),
+                SizedBox(width: 10),
+                Text('Test Your Vocabulary',
+                    style: TextStyle(fontSize: 18, color: Colors.teal[600])),
+              ],
+            ),
             onTap: () {
               // Handle drawer item click
             },
