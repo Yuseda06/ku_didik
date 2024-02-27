@@ -351,20 +351,33 @@ class _CarouselItemState extends State<CarouselItem> {
               ),
             ),
             Positioned(
-              top: 40,
+                top: 150,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 18),
+                  child: Container(
+                    height: 1,
+                    width: 250,
+                    color: Colors.black12,
+                  ),
+                )),
+            Positioned(
+              top: 150,
               left: 0,
-              child: Visibility(
-                visible:
-                    isVisible, // Use the isVisible state to control visibility
-                child: SizedBox(
-                  width: 250, // Set the maximum width as needed
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(8.0, 15.0, 0.0, 0.0),
-                    child: Text(
-                      capitalize(widget.meaning),
-                      style: TextStyle(
-                        color: Color.fromARGB(255, 96, 96, 94),
-                        fontSize: 20,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: Visibility(
+                  visible:
+                      isVisible, // Use the isVisible state to control visibility
+                  child: SizedBox(
+                    width: 250, // Set the maximum width as needed
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(8.0, 15.0, 0.0, 0.0),
+                      child: Text(
+                        capitalize(widget.meaning),
+                        style: TextStyle(
+                          color: Colors.black45,
+                          fontSize: 20,
+                        ),
                       ),
                     ),
                   ),
