@@ -76,12 +76,43 @@ class DidikButton extends StatelessWidget {
 
   Future<void> _signInWithEmailAndPassword() async {
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
       );
+
+      // Additional logic after successful sign-in, if needed
+
+      if (context != null) {
+        Navigator.pushReplacementNamed(context!, '/home');
+      }
     } catch (e) {
-      print('Error signing in: $e');
+      if (e is FirebaseAuthException) {
+        // Handle Firebase Authentication errors
+        switch (e.code) {
+          case 'invalid-email':
+            showToast('Please enter a valid email');
+            break;
+          case 'user-disabled':
+            showToast('User with this email has been disabled');
+            break;
+          case 'user-not-found':
+            showToast('User with this email not found');
+            break;
+          case 'wrong-password':
+            showToast('Wrong password provided for this user');
+            break;
+          case 'requires-recent-login':
+            showToast('Please sign in again to continue');
+            break;
+          default:
+            showToast('Error during sign-in: ${e.message}');
+        }
+      } else {
+        // Handle other non-Firebase errors
+        showToast('Error during sign-in: $e');
+      }
     }
   }
 
