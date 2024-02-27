@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -20,11 +21,15 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late Stream<Users?> _userStream;
+  final CollectionReference _items =
+      FirebaseFirestore.instance.collection("users");
+  late Stream<QuerySnapshot> _stream;
 
   @override
   void initState() {
     super.initState();
     final user = FirebaseAuth.instance.currentUser;
+    _stream = FirebaseFirestore.instance.collection('users').snapshots();
 
     _userStream = readUser(user?.uid ?? '');
   }
@@ -170,6 +175,119 @@ class _HomePageState extends State<HomePage> {
               }
             },
           ),
+          StreamBuilder<QuerySnapshot>(
+              stream: _stream,
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text("Some error occured${snapshot.error}"),
+                  );
+                }
+                // Now , Cheeck if datea arrived?
+                if (snapshot.hasData) {
+                  QuerySnapshot querySnapshot = snapshot.data;
+                  List<QueryDocumentSnapshot> document = querySnapshot.docs;
+
+                  List<Map> items =
+                      document.map((e) => e.data() as Map).toList();
+
+                  return SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 150),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 30, bottom: 20),
+                            child: Text('Leaderboard',
+                                style: TextStyle(
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.amber)),
+                          ),
+                          Container(
+                            height: MediaQuery.of(context).size.height,
+                            width: MediaQuery.of(context).size.width,
+                            child: ListView.builder(
+                              itemCount: items.length,
+                              itemBuilder: (context, index) {
+                                final String base64Image =
+                                    items[index]['profileUrl'];
+                                Uint8List bytes =
+                                    base64Decode(base64Image.split(',').last);
+                                return Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(30, 10, 30, 0),
+                                  child: Card(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                          15.0), // Adjust the radius as needed
+                                    ),
+                                    elevation: 5,
+                                    shadowColor: Colors.black26,
+                                    child: ListTile(
+                                      hoverColor: Colors.amber,
+                                      leading: SizedBox(
+                                        child: Text(
+                                          (index + 1).toString(),
+                                          style: TextStyle(
+                                            fontSize: 45,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.amber,
+                                          ),
+                                        ),
+                                        height: 50,
+                                      ),
+                                      title: Text(
+                                        items[index]['username'],
+                                        style: TextStyle(
+                                            color: Colors.teal,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20),
+                                      ),
+                                      subtitle: Text('Score'),
+                                      trailing: Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            0, 0, 0, 0),
+                                        child: Container(
+                                          height: 100,
+                                          decoration: BoxDecoration(
+                                            color: Colors.amber[100],
+                                            borderRadius:
+                                                BorderRadius.circular(50),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                6, 0, 6, 0),
+                                            child: ClipOval(
+                                              clipBehavior:
+                                                  Clip.antiAliasWithSaveLayer,
+                                              child: Image.memory(
+                                                width: 50,
+                                                height: 50,
+                                                bytes,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                  ;
+                } else {
+                  return const Center(
+                    child: Text('User data not found'),
+                  );
+                }
+              }),
         ],
       ),
     );
