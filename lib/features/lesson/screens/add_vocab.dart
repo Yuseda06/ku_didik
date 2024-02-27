@@ -236,15 +236,35 @@ class Word {
   }
 }
 
-void _speakWord(word) {
+void _speakWord(String word) async {
   final language = langdetect.detect(word);
 
-  print('english: $language');
+  print('Detected language: $language');
 
   FlutterTts flutterTts = FlutterTts();
-  flutterTts.setLanguage(language);
-  // Set language to English or your desired language
-  flutterTts.speak(word);
+
+  // Map detected language to FlutterTts language code (adjust as needed)
+  String flutterTtsLanguageCode = _mapLanguageToFlutterTtsCode(language);
+
+  // Set language to FlutterTts
+  await flutterTts.setLanguage(flutterTtsLanguageCode);
+
+  // Speak the word
+  await flutterTts.speak(word);
+}
+
+String _mapLanguageToFlutterTtsCode(String language) {
+  // Map detected language to FlutterTts language code
+  // You may need to customize this mapping based on your needs
+  switch (language.toLowerCase()) {
+    case 'en':
+      return 'en-US'; // Example: 'en-US' for English (United States)
+    case 'es':
+      return 'es-US'; // Example: 'es-US' for Spanish (United States)
+    // Add more cases for other languages if needed
+    default:
+      return 'en-US'; // Default to English
+  }
 }
 
 String capitalize(String s) {
@@ -279,8 +299,10 @@ class _CarouselItemState extends State<CarouselItem> {
     super.initState();
 
     // Set a delay of 5 seconds (adjust as needed)
-    Future.delayed(Duration(seconds: 7), () {
+    Future.delayed(Duration(seconds: 6), () {
       // After the delay, set isVisible to true
+
+      _speakWord(widget.word);
       setState(() {
         isVisible = true;
       });
