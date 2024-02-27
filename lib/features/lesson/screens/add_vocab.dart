@@ -254,7 +254,7 @@ String capitalize(String s) {
   return s[0].toUpperCase() + s.substring(1);
 }
 
-class CarouselItem extends StatelessWidget {
+class CarouselItem extends StatefulWidget {
   final String word;
   final String meaning;
   final VoidCallback onDelete;
@@ -266,6 +266,26 @@ class CarouselItem extends StatelessWidget {
     required this.onDelete,
     required this.onAutoPlay,
   });
+
+  @override
+  State<CarouselItem> createState() => _CarouselItemState();
+}
+
+class _CarouselItemState extends State<CarouselItem> {
+  bool isVisible = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Set a delay of 5 seconds (adjust as needed)
+    Future.delayed(Duration(seconds: 7), () {
+      // After the delay, set isVisible to true
+      setState(() {
+        isVisible = true;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -297,25 +317,33 @@ class CarouselItem extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
-                  _speakWord(word);
+                  _speakWord(widget.word);
                 },
                 child: Text(
-                  capitalize(word),
+                  capitalize(widget.word),
                   style: TextStyle(
                     color: const Color.fromARGB(255, 138, 106, 7),
                     fontSize: 23,
                   ),
                 ),
               ),
-              subtitle: SizedBox(
-                width: 250, // Set the maximum width as needed
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(8.0, 15.0, 0.0, 0.0),
-                  child: Text(
-                    capitalize(meaning),
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 96, 96, 94),
-                      fontSize: 20,
+            ),
+            Positioned(
+              top: 40,
+              left: 0,
+              child: Visibility(
+                visible:
+                    isVisible, // Use the isVisible state to control visibility
+                child: SizedBox(
+                  width: 250, // Set the maximum width as needed
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(8.0, 15.0, 0.0, 0.0),
+                    child: Text(
+                      capitalize(widget.meaning),
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 96, 96, 94),
+                        fontSize: 20,
+                      ),
                     ),
                   ),
                 ),
@@ -326,7 +354,7 @@ class CarouselItem extends StatelessWidget {
               right: 5.0,
               child: IconButton(
                 icon: Icon(Icons.delete, color: Colors.red, size: 40.0),
-                onPressed: onDelete,
+                onPressed: widget.onDelete,
               ),
             ),
             Positioned(
@@ -341,7 +369,7 @@ class CarouselItem extends StatelessWidget {
                   icon: Icon(Icons.replay_circle_filled,
                       color: Colors.amber, size: 25.0),
                   onPressed: () {
-                    onAutoPlay();
+                    widget.onAutoPlay();
                   },
                 )),
           ],
