@@ -34,6 +34,7 @@ class AddVocab extends StatefulWidget {
 class _AddVocabState extends State<AddVocab> {
   final TextEditingController _vocabController = TextEditingController();
   final _refreshController = StreamController<void>.broadcast();
+  bool autoPlay = true;
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +61,7 @@ class _AddVocabState extends State<AddVocab> {
                         return CarouselSlider(
                           options: CarouselOptions(
                             enableInfiniteScroll: false,
-                            autoPlay: true,
+                            autoPlay: autoPlay,
                             height: 400.0,
                             enlargeCenterPage: true,
                           ),
@@ -70,6 +71,11 @@ class _AddVocabState extends State<AddVocab> {
                               meaning: word.meaning,
                               onDelete: () {
                                 _handleDeleteWord(username, word.key);
+                              },
+                              onAutoPlay: () {
+                                setState(() {
+                                  autoPlay = !autoPlay;
+                                });
                               },
                             );
                           }).toList(),
@@ -252,11 +258,13 @@ class CarouselItem extends StatelessWidget {
   final String word;
   final String meaning;
   final VoidCallback onDelete;
+  final VoidCallback onAutoPlay;
 
   const CarouselItem({
     required this.word,
     required this.meaning,
     required this.onDelete,
+    required this.onAutoPlay,
   });
 
   @override
@@ -323,9 +331,19 @@ class CarouselItem extends StatelessWidget {
             ),
             Positioned(
               top: 10.0,
-              right: 6.0,
+              right: 10.0,
               child: Icon(Icons.volume_up, color: Colors.teal, size: 25.0),
             ),
+            Positioned(
+                top: 40.0,
+                right: 0.0,
+                child: IconButton(
+                  icon: Icon(Icons.replay_circle_filled,
+                      color: Colors.amber, size: 25.0),
+                  onPressed: () {
+                    onAutoPlay();
+                  },
+                )),
           ],
         ),
       ),
