@@ -9,6 +9,7 @@ import 'package:ku_didik/utils/theme/username_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:translator/translator.dart' as translator_package;
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:flutter_langdetect/flutter_langdetect.dart' as langdetect;
 
 void main() {
   runApp(MyApp());
@@ -59,6 +60,7 @@ class _AddVocabState extends State<AddVocab> {
                         return CarouselSlider(
                           options: CarouselOptions(
                             enableInfiniteScroll: false,
+                            autoPlay: true,
                             height: 400.0,
                             enlargeCenterPage: true,
                           ),
@@ -184,8 +186,8 @@ class _AddVocabState extends State<AddVocab> {
         translator_package.GoogleTranslator();
 
     // Translate to Bahasa Malaysia
-    var translation =
-        await translator.translate(englishWord, from: 'en', to: 'ms');
+    var translation = await translator.translate(englishWord, to: 'ms');
+    // await translator.translate(englishWord, from: 'en', to: 'ms');
 
     return translation.text;
   }
@@ -229,8 +231,12 @@ class Word {
 }
 
 void _speakWord(word) {
+  final language = langdetect.detect(word);
+
+  print('english: $language');
+
   FlutterTts flutterTts = FlutterTts();
-  flutterTts.setLanguage("en-US");
+  flutterTts.setLanguage(language);
   // Set language to English or your desired language
   flutterTts.speak(word);
 }

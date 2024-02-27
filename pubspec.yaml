@@ -54,6 +54,7 @@ dependencies:
   translator: ^1.0.0
   carousel_slider: ^4.2.1
   flutter_tts: ^3.8.5
+  flutter_langdetect: ^0.0.2
 
 dev_dependencies:
   flutter_test:

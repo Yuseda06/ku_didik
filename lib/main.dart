@@ -11,6 +11,7 @@ import 'package:ku_didik/utils/pick_image.dart';
 import 'package:provider/provider.dart';
 import 'package:ku_didik/utils/theme/profile_provider.dart';
 import 'package:ku_didik/utils/theme/username_provider.dart';
+import 'package:flutter_langdetect/flutter_langdetect.dart' as langdetect;
 
 void main() async {
   await dotenv.load(fileName: ".env");
@@ -22,6 +23,7 @@ void main() async {
   String databaseUrl = dotenv.env['DATABASE_URL'] ?? '';
 
   WidgetsFlutterBinding.ensureInitialized();
+  await langdetect.initLangDetect();
   Platform.isAndroid
       ? await Firebase.initializeApp(
           options: FirebaseOptions(
