@@ -40,7 +40,6 @@ class _AddVocabState extends State<AddVocab> {
   Widget build(BuildContext context) {
     final usernameProvider = Provider.of<UsernameProvider>(context);
     String username = usernameProvider.username ?? '';
-
     return Scaffold(
       appBar: RoundedAppBar(title: 'Add Your Vocabulary'),
       body: Column(
@@ -236,12 +235,12 @@ class Word {
   }
 }
 
-void _speakWord(String word) async {
+void _speakWord(String word, FlutterTts flutterTts) async {
   final language = langdetect.detect(word);
 
   print('Detected language: $language');
 
-  FlutterTts flutterTts = FlutterTts();
+  // FlutterTts flutterTts = FlutterTts();
 
   // Map detected language to FlutterTts language code (adjust as needed)
   String flutterTtsLanguageCode = _mapLanguageToFlutterTtsCode(language);
@@ -279,12 +278,14 @@ class CarouselItem extends StatefulWidget {
   final String meaning;
   final VoidCallback onDelete;
   final VoidCallback onAutoPlay;
+  final Function? onSpeak;
 
   const CarouselItem({
     required this.word,
     required this.meaning,
     required this.onDelete,
     required this.onAutoPlay,
+    this.onSpeak,
   });
 
   @override
@@ -293,6 +294,7 @@ class CarouselItem extends StatefulWidget {
 
 class _CarouselItemState extends State<CarouselItem> {
   bool isVisible = false;
+  FlutterTts flutterTts = FlutterTts();
 
   @override
   void initState() {
@@ -302,11 +304,18 @@ class _CarouselItemState extends State<CarouselItem> {
     Future.delayed(Duration(seconds: 6), () {
       // After the delay, set isVisible to true
 
-      _speakWord(widget.word);
+      _speakWord(widget.word, flutterTts);
       setState(() {
         isVisible = true;
       });
     });
+  }
+
+  @override
+  void dispose() {
+    // Stop speaking when the state is disposed
+    flutterTts.stop();
+    super.dispose();
   }
 
   @override
@@ -339,7 +348,7 @@ class _CarouselItemState extends State<CarouselItem> {
                   ),
                 ),
                 onPressed: () {
-                  _speakWord(widget.word);
+                  _speakWord(widget.word, flutterTts);
                 },
                 child: Text(
                   capitalize(widget.word),
