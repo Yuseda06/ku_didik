@@ -72,7 +72,7 @@ class FirebaseController {
   }
 }
 
-Future<String> _retrieveWordCount(String username) async {
+Future<int> _retrieveWordCount(String username) async {
   final user = FirebaseAuth.instance.currentUser;
   List<String> wordList = [];
   int wordCount = 0;
@@ -97,7 +97,7 @@ Future<String> _retrieveWordCount(String username) async {
 
         // You can now use the wordList as needed
         print('snapshot: $wordCount');
-        return wordCount.toString();
+        return wordCount;
       } else {
         print('Snapshot is null');
       }
@@ -107,5 +107,5 @@ Future<String> _retrieveWordCount(String username) async {
   }
 
   // Return an empty list or another default value in case of an error or if the data is not available
-  return '0';
+  return 0;
 }
