@@ -34,7 +34,7 @@ class AddVocab extends StatefulWidget {
 class _AddVocabState extends State<AddVocab> {
   final TextEditingController _vocabController = TextEditingController();
   final _refreshController = StreamController<void>.broadcast();
-  bool autoPlay = true;
+  bool autoPlay = false;
 
   @override
   Widget build(BuildContext context) {
@@ -361,13 +361,10 @@ class _CarouselItemState extends State<CarouselItem> {
             ),
             Positioned(
                 top: 150,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 18),
-                  child: Container(
-                    height: 1,
-                    width: 250,
-                    color: Colors.black12,
-                  ),
+                child: Container(
+                  height: 3,
+                  width: MediaQuery.of(context).size.width * 1,
+                  color: Colors.amber[50],
                 )),
             Positioned(
               top: 150,
@@ -403,11 +400,14 @@ class _CarouselItemState extends State<CarouselItem> {
             ),
             Positioned(
               top: 10.0,
-              right: 10.0,
-              child: Icon(Icons.volume_up, color: Colors.teal, size: 25.0),
+              right: 0.0,
+              child: IconButton(
+                icon: Icon(Icons.volume_up, color: Colors.teal, size: 25.0),
+                onPressed: flutterTts.stop,
+              ),
             ),
             Positioned(
-                top: 40.0,
+                top: 60.0,
                 right: 0.0,
                 child: IconButton(
                   icon: Icon(Icons.replay_circle_filled,

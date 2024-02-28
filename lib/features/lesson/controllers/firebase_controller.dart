@@ -1,10 +1,9 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:ku_didik/features/lesson/models/word_meaning.dart';
 
 class FirebaseController {
-  final DatabaseReference _database = FirebaseDatabase.instance.ref();
-
   Future<void> handleDeleteWord(String word, String username) async {
     try {
       // Construct the path to the word in the database
@@ -44,33 +43,69 @@ class FirebaseController {
       });
 
       print('Word added successfully: $word');
+
+      // Update the word count in Firestore
+      await _updateWordCount(username);
     } catch (error) {
       print('Error adding word: $error');
       // Handle the error as needed
     }
   }
 
-  Future<WordMeaning?> retrieveWord(String username, String word) async {
-    final userLessonRef =
-        _database.child('users/$username/english/vocab/words/$word');
+  Future<void> _updateWordCount(username) async {
+    final user = FirebaseAuth.instance.currentUser;
 
-    // Use the onValue method to listen for changes
-    final completer =
-        Completer<WordMeaning?>(); // Completer to handle async operation
-
-    userLessonRef.onValue.listen((event) {
-      final snapshot = event.snapshot;
-
-      if (snapshot.value != null) {
-        // Use WordMeaning.fromSnapshot to convert the snapshot to your model
-        final wordMeaning = WordMeaning.fromSnapshot(snapshot);
-        completer.complete(wordMeaning);
-      } else {
-        completer.complete(null);
+    if (user != null) {
+      try {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .update({
+          'wordCount': await _retrieveWordCount(username),
+        });
+        print(_retrieveWordCount(username));
+//close the model sheet
+      } catch (error) {
+        print('Failed to update profile in Firestore: $error');
       }
-    });
-
-    // Return the Future from the Completer
-    return completer.future;
+    }
   }
+}
+
+Future<String> _retrieveWordCount(String username) async {
+  final user = FirebaseAuth.instance.currentUser;
+  List<String> wordList = [];
+  int wordCount = 0;
+
+  if (user != null) {
+    try {
+      // Use FirebaseDatabase instead of FirebaseFirestore
+      DatabaseReference userDatabaseReference =
+          FirebaseDatabase.instance.ref('users/$username/english/vocab/words');
+
+      DatabaseEvent event = await userDatabaseReference.once();
+      DataSnapshot snapshot = event.snapshot;
+
+      // Check if the snapshot has data
+      if (snapshot.value != null) {
+        // Iterate through the children and add them to the wordList
+        snapshot.children.forEach((childSnapshot) {
+          String word = childSnapshot.key as String;
+          wordList.add(word);
+          wordCount++;
+        });
+
+        // You can now use the wordList as needed
+        print('snapshot: $wordCount');
+        return wordCount.toString();
+      } else {
+        print('Snapshot is null');
+      }
+    } catch (error) {
+      print('Failed to retrieve word list from Realtime Database: $error');
+    }
+  }
+
+  // Return an empty list or another default value in case of an error or if the data is not available
+  return '0';
 }

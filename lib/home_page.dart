@@ -191,6 +191,8 @@ class _HomePageState extends State<HomePage> {
                   List<Map> items =
                       document.map((e) => e.data() as Map).toList();
 
+                  print(items.length);
+
                   return Padding(
                     padding: const EdgeInsets.only(top: 150),
                     child: Column(
