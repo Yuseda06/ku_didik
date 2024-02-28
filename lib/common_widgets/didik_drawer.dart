@@ -100,7 +100,7 @@ class _DidikDrawerState extends State<DidikDrawer> {
               ],
             ),
             onTap: () {
-              // Handle drawer item click
+              Navigator.pushNamed(context, '/test_vocab');
             },
           ),
           Spacer(), // Add Spacer to push "Sign Out" to the bottom

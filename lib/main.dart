@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:ku_didik/features/lesson/screens/add_vocab.dart';
+import 'package:ku_didik/features/lesson/screens/test_vocab.dart';
 import 'package:ku_didik/home_page.dart';
 import 'package:ku_didik/login_page.dart';
 import 'package:ku_didik/signup_page.dart';
@@ -59,6 +60,7 @@ class MyApp extends StatelessWidget {
         '/sign_up': (context) => const SignUpPage(),
         '/add_vocab': (context) => const AddVocab(),
         '/pick_image': (context) => const PickImage(),
+        '/test_vocab': (context) => const TestVocab(),
       },
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
