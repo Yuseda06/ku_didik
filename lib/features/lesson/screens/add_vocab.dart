@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:ku_didik/common_widgets/didik_app_bar.dart';
+import 'package:ku_didik/features/lesson/controllers/firebase_controller.dart';
 import 'package:ku_didik/test.dart';
 import 'package:ku_didik/utils/theme/username_provider.dart';
 import 'package:provider/provider.dart';
@@ -34,6 +35,7 @@ class AddVocab extends StatefulWidget {
 class _AddVocabState extends State<AddVocab> {
   final TextEditingController _vocabController = TextEditingController();
   final _refreshController = StreamController<void>.broadcast();
+  FirebaseController firebaseController = FirebaseController();
   bool autoPlay = false;
 
   @override
@@ -197,10 +199,11 @@ class _AddVocabState extends State<AddVocab> {
     return translation.text;
   }
 
-  void _handleDeleteWord(String username, String word) {
-    print('username: $username');
+  void _handleDeleteWord(String username, String word) async {
     DatabaseReference userDatabaseReference =
         FirebaseDatabase.instance.ref('users/$username/english/vocab/words');
+
+    await firebaseController.updateWordCount(username);
 
     userDatabaseReference.child(word).remove().then((_) {
       // Successfully deleted

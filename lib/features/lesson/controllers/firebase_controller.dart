@@ -45,14 +45,14 @@ class FirebaseController {
       print('Word added successfully: $word');
 
       // Update the word count in Firestore
-      await _updateWordCount(username);
+      await updateWordCount(username);
     } catch (error) {
       print('Error adding word: $error');
       // Handle the error as needed
     }
   }
 
-  Future<void> _updateWordCount(username) async {
+  Future<void> updateWordCount(username) async {
     final user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {

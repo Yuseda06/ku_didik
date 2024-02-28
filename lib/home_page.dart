@@ -234,7 +234,7 @@ class _HomePageState extends State<HomePage> {
                                           style: TextStyle(
                                             fontSize: 45,
                                             fontWeight: FontWeight.bold,
-                                            color: Colors.amber,
+                                            color: Colors.black45,
                                           ),
                                         ),
                                         height: 50,
@@ -254,6 +254,17 @@ class _HomePageState extends State<HomePage> {
                                             Icons.monetization_on,
                                             color: Colors.amber,
                                             size: 25,
+                                          ),
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(left: 10),
+                                            child: Text(
+                                                items[index]['wordCount']
+                                                    .toString(),
+                                                style: TextStyle(
+                                                    color: Colors.amber,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 20)),
                                           ),
                                         ],
                                       ),
