@@ -153,8 +153,10 @@ class _AddVocabState extends State<AddVocab> {
       DatabaseReference userDatabaseReference =
           FirebaseDatabase.instance.ref('users/$username/english/vocab/words');
 
-      DatabaseEvent event =
-          await userDatabaseReference.orderByChild('timestamp').once();
+      DatabaseEvent event = await userDatabaseReference
+          .orderByChild('timestamp')
+          // .limitToFirst(20)
+          .once();
       DataSnapshot snapshot = event.snapshot;
       List<Word> words = [];
 
@@ -165,6 +167,9 @@ class _AddVocabState extends State<AddVocab> {
       List<MapEntry<dynamic, dynamic>> sortedValues = values.entries.toList()
         ..sort((a, b) =>
             (b.value['timestamp'] ?? 0).compareTo(a.value['timestamp'] ?? 0));
+
+      // sortedValues = sortedValues.take(10).toList();
+      sortedValues = sortedValues.sublist(10, 12);
 
       for (var entry in sortedValues) {
         words.add(Word(
