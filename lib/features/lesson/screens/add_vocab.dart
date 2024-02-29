@@ -5,7 +5,6 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:ku_didik/common_widgets/didik_app_bar.dart';
 import 'package:ku_didik/features/lesson/controllers/firebase_controller.dart';
-import 'package:ku_didik/test.dart';
 import 'package:ku_didik/utils/theme/username_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:translator/translator.dart' as translator_package;
@@ -42,6 +41,13 @@ class _AddVocabState extends State<AddVocab> {
   Widget build(BuildContext context) {
     final usernameProvider = Provider.of<UsernameProvider>(context);
     String username = usernameProvider.username ?? '';
+
+    TextEditingController startController = TextEditingController();
+    TextEditingController endController = TextEditingController();
+
+    final start = int.parse(startController.text);
+    final end = int.parse(endController.text);
+
     return Scaffold(
       appBar: RoundedAppBar(title: 'Add Your Vocabulary'),
       body: Column(
@@ -51,7 +57,7 @@ class _AddVocabState extends State<AddVocab> {
                 stream: _refreshController.stream,
                 builder: (context, snapshot) {
                   return FutureBuilder(
-                    future: _getData(username),
+                    future: _getData(username, 0, 2),
                     builder: (context, AsyncSnapshot<List<Word>> snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return Center(child: CircularProgressIndicator());
@@ -148,7 +154,7 @@ class _AddVocabState extends State<AddVocab> {
     );
   }
 
-  Future<List<Word>> _getData(String username) async {
+  Future<List<Word>> _getData(String username, int start, int end) async {
     try {
       DatabaseReference userDatabaseReference =
           FirebaseDatabase.instance.ref('users/$username/english/vocab/words');
@@ -169,7 +175,7 @@ class _AddVocabState extends State<AddVocab> {
             (b.value['timestamp'] ?? 0).compareTo(a.value['timestamp'] ?? 0));
 
       // sortedValues = sortedValues.take(10).toList();
-      sortedValues = sortedValues.sublist(10, 12);
+      sortedValues = sortedValues.sublist(start, end);
 
       for (var entry in sortedValues) {
         words.add(Word(
