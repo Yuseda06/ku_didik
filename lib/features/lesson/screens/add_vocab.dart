@@ -33,6 +33,8 @@ class AddVocab extends StatefulWidget {
 
 class _AddVocabState extends State<AddVocab> {
   final TextEditingController _vocabController = TextEditingController();
+  final TextEditingController startController = TextEditingController();
+  final TextEditingController endController = TextEditingController();
   final _refreshController = StreamController<void>.broadcast();
   FirebaseController firebaseController = FirebaseController();
   bool autoPlay = false;
@@ -42,22 +44,74 @@ class _AddVocabState extends State<AddVocab> {
     final usernameProvider = Provider.of<UsernameProvider>(context);
     String username = usernameProvider.username ?? '';
 
-    TextEditingController startController = TextEditingController();
-    TextEditingController endController = TextEditingController();
+    String start = startController.text;
+    String end = endController.text;
 
-    final start = int.parse(startController.text);
-    final end = int.parse(endController.text);
+    print('start: $start');
+    print('end: $end  ');
+
+    // _refresh();
+
+    // try {
+    //   final start = int.parse(startController.text);
+    //   final end = int.parse(endController.text);
+
+    //   // Use the parsed start and end values as needed
+    //   // ...
+    // } catch (e) {
+    //   // Handle the parsing error here
+    //   print('Invalid input: $e');
+
+    //   // You can provide default values or show an error message to the user
+    //   // For example:
+    //   // final start = 0;
+    //   // final end = 0;
+    // }
 
     return Scaffold(
       appBar: RoundedAppBar(title: 'Add Your Vocabulary'),
       body: Column(
         children: [
+          Container(
+            padding: EdgeInsets.only(top: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Container(
+                  width: 70,
+                  child: TextField(
+                    onSubmitted: (value) {
+                      setState(() {});
+                    },
+                    controller: startController,
+                    decoration: InputDecoration(
+                      labelText: 'Start',
+                      contentPadding: EdgeInsets.symmetric(horizontal: 15.0),
+                    ),
+                  ),
+                ),
+                Container(
+                  width: 70,
+                  child: TextField(
+                    onSubmitted: (value) {
+                      setState(() {});
+                    },
+                    controller: endController,
+                    decoration: InputDecoration(
+                      labelText: 'End',
+                      contentPadding: EdgeInsets.symmetric(horizontal: 15.0),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
           Expanded(
             child: StreamBuilder<void>(
                 stream: _refreshController.stream,
                 builder: (context, snapshot) {
                   return FutureBuilder(
-                    future: _getData(username, 0, 2),
+                    future: _getData(username, start, end),
                     builder: (context, AsyncSnapshot<List<Word>> snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return Center(child: CircularProgressIndicator());
@@ -154,7 +208,7 @@ class _AddVocabState extends State<AddVocab> {
     );
   }
 
-  Future<List<Word>> _getData(String username, int start, int end) async {
+  Future<List<Word>> _getData(String username, String start, String end) async {
     try {
       DatabaseReference userDatabaseReference =
           FirebaseDatabase.instance.ref('users/$username/english/vocab/words');
@@ -175,7 +229,7 @@ class _AddVocabState extends State<AddVocab> {
             (b.value['timestamp'] ?? 0).compareTo(a.value['timestamp'] ?? 0));
 
       // sortedValues = sortedValues.take(10).toList();
-      sortedValues = sortedValues.sublist(start, end);
+      sortedValues = sortedValues.sublist(int.parse(start), int.parse(end));
 
       for (var entry in sortedValues) {
         words.add(Word(
@@ -353,6 +407,7 @@ class _CarouselItemState extends State<CarouselItem> {
         padding: const EdgeInsets.all(5.0),
         child: Stack(
           children: [
+            Positioned(top: -90, child: Text('test')),
             ListTile(
               title: TextButton(
                 style: TextButton.styleFrom(
