@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:ku_didik/features/lesson/screens/add_vocab.dart';
 import 'package:ku_didik/features/lesson/screens/test_vocab.dart';
+import 'package:ku_didik/features/lesson/screens/vocab_quiz.dart';
 import 'package:ku_didik/home_page.dart';
 import 'package:ku_didik/login_page.dart';
 import 'package:ku_didik/signup_page.dart';

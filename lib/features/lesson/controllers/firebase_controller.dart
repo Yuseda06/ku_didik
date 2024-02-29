@@ -22,6 +22,28 @@ class FirebaseController {
     }
   }
 
+  Future<void> handleUpdateMeaning(
+    String enteredMeaning,
+    String username,
+    String wordKey, // Pass the wordKey to identify the specific word
+  ) async {
+    try {
+      // Construct the path to the word in the database
+      String path = 'users/$username/english/vocab/words/$wordKey';
+      // String path = 'users/$username/english/vocab/words/';
+      // Get a reference to the specific word in the database
+      DatabaseReference wordRef = FirebaseDatabase.instance.ref(path);
+
+      // Set only the value for enteredMeaning without changing the timestamp
+      await wordRef.update({
+        'enteredMeaning': enteredMeaning.toLowerCase(),
+      });
+    } catch (error) {
+      print('Error updating meaning: $error');
+      // Handle the error as needed
+    }
+  }
+
   Future<void> handleAddWord(
     String word,
     String meaning,

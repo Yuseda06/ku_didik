@@ -1,4 +1,15 @@
+import 'dart:async';
+
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_tts/flutter_tts.dart';
+import 'package:ku_didik/common_widgets/didik_app_bar.dart';
+import 'package:ku_didik/test.dart';
+import 'package:ku_didik/utils/theme/username_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_langdetect/flutter_langdetect.dart' as langdetect;
 
 class TestVocab extends StatefulWidget {
   const TestVocab({super.key});
@@ -8,14 +19,295 @@ class TestVocab extends StatefulWidget {
 }
 
 class _TestVocabState extends State<TestVocab> {
+  bool autoPlay = false;
+  final _refreshController = StreamController<void>.broadcast();
+
   @override
   Widget build(BuildContext context) {
+    final usernameProvider = Provider.of<UsernameProvider>(context);
+    String username = usernameProvider.username ?? '';
+
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Test Vocab'),
+      appBar: RoundedAppBar(title: 'Test Your Vocab!'),
+      body: Column(
+        children: [
+          Expanded(
+            child: StreamBuilder<void>(
+                stream: _refreshController.stream,
+                builder: (context, snapshot) {
+                  return FutureBuilder(
+                    future: _getData(username),
+                    builder: (context, AsyncSnapshot<List<Word>> snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError) {
+                        return Center(child: Text('Error: ${snapshot.error}'));
+                      } else {
+                        List<Word> words = snapshot.data!;
+                        return CarouselSlider(
+                          options: CarouselOptions(
+                            enableInfiniteScroll: false,
+                            autoPlay: autoPlay,
+                            height: 600.0,
+                            enlargeCenterPage: true,
+                          ),
+                          items: words.map((word) {
+                            return CarouselItem(
+                              word: word.word,
+                              meaning: word.meaning,
+                              wordKey: word.key,
+                            );
+                          }).toList(),
+                        );
+                      }
+                    },
+                  );
+                }),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+Future<List<Word>> _getData(String username) async {
+  try {
+    DatabaseReference userDatabaseReference =
+        FirebaseDatabase.instance.ref('users/$username/english/vocab/words');
+
+    DatabaseEvent event =
+        await userDatabaseReference.orderByChild('timestamp').once();
+    DataSnapshot snapshot = event.snapshot;
+    List<Word> words = [];
+
+    Map<dynamic, dynamic> values =
+        (snapshot.value as Map<dynamic, dynamic>) ?? {};
+
+    // Sort the values based on timestamp
+    List<MapEntry<dynamic, dynamic>> sortedValues = values.entries.toList()
+      ..sort((a, b) =>
+          (b.value['timestamp'] ?? 0).compareTo(a.value['timestamp'] ?? 0));
+
+    // Take only 20 items
+    sortedValues = sortedValues.take(1).toList();
+
+    // Randomize the order
+    sortedValues.shuffle();
+
+    for (var entry in sortedValues) {
+      words.add(Word(
+        word: entry.value['word'],
+        meaning: entry.value['meaning'],
+        key: entry.key,
+      ));
+    }
+
+    return words;
+  } catch (error) {
+    print('Error retrieving data: $error');
+    // Handle the error as needed
+    return [
+      Word(
+          word: "Your Vocab is Zero", meaning: 'Please Add Some', key: "762431")
+    ]; // Return an empty list or handle it in a way that makes sense for your application
+  }
+}
+
+class Word {
+  final String word;
+  final String meaning;
+  final String key;
+
+  Word({
+    required this.word,
+    required this.meaning,
+    required this.key,
+  });
+
+  // Factory constructor to create Word instance from a map
+  factory Word.fromMap(String key, Map<String, dynamic> map) {
+    return Word(
+      word: map['word'],
+      meaning: map['meaning'],
+      key: key,
+    );
+  }
+}
+
+void _speakWord(String word, FlutterTts flutterTts) async {
+  final language = langdetect.detect(word);
+
+  // FlutterTts flutterTts = FlutterTts();
+
+  // Map detected language to FlutterTts language code (adjust as needed)
+  String flutterTtsLanguageCode = _mapLanguageToFlutterTtsCode(language);
+
+  // Set language to FlutterTts
+  await flutterTts.setLanguage(flutterTtsLanguageCode);
+
+  // Speak the word
+  await flutterTts.speak(word);
+}
+
+String _mapLanguageToFlutterTtsCode(String language) {
+  // Map detected language to FlutterTts language code
+  // You may need to customize this mapping based on your needs
+  switch (language.toLowerCase()) {
+    case 'en':
+      return 'en-US'; // Example: 'en-US' for English (United States)
+    case 'es':
+      return 'es-US'; // Example: 'es-US' for Spanish (United States)
+    // Add more cases for other languages if needed
+    default:
+      return 'en-US'; // Default to English
+  }
+}
+
+String capitalize(String s) {
+  if (s == null || s.isEmpty) {
+    return s;
+  }
+  return s[0].toUpperCase() + s.substring(1);
+}
+
+class CarouselItem extends StatefulWidget {
+  final String word;
+  final String meaning;
+  final String wordKey;
+
+  const CarouselItem({
+    required this.word,
+    required this.meaning,
+    required this.wordKey,
+  });
+
+  @override
+  State<CarouselItem> createState() => _CarouselItemState();
+}
+
+class _CarouselItemState extends State<CarouselItem> {
+  bool isVisible = true;
+  FlutterTts flutterTts = FlutterTts();
+  TextEditingController meaningController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    final usernameProvider = Provider.of<UsernameProvider>(context);
+    String username = usernameProvider.username ?? '';
+    return Container(
+      margin:
+          EdgeInsets.all(8.0), // Add margin for better visibility of the shadow
+      decoration: BoxDecoration(
+        color: Colors.white, // Set the background color of the card
+        borderRadius:
+            BorderRadius.circular(16.0), // Adjust the radius as needed
+        boxShadow: [
+          BoxShadow(
+            color: const Color.fromARGB(255, 234, 234, 233),
+            blurRadius: 10.0, // Adjust the blur radius as needed
+            spreadRadius: 5.0, // Adjust the spread radius as needed
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(5.0),
+        child: Stack(
+          children: [
+            ListTile(
+              title: TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.transparent,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                ),
+                onPressed: () {
+                  _speakWord(widget.word, flutterTts);
+                },
+                child: Text(
+                  capitalize(widget.word),
+                  style: TextStyle(
+                    color: const Color.fromARGB(255, 138, 106, 7),
+                    fontSize: 23,
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              top: 150,
+              left: 0,
+              child: Column(
+                children: [
+                  SizedBox(
+                    width: 283,
+                    child: Padding(
+                        padding: const EdgeInsets.fromLTRB(5.0, 15.0, 0.0, 0.0),
+                        child: TextField(
+                          maxLines: null,
+                          controller: meaningController,
+                          decoration: InputDecoration(
+                            labelText: 'Enter meaning',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              isVisible = value.isEmpty;
+                            });
+                          },
+                        )),
+                  ),
+                  SizedBox(height: 10),
+                  ElevatedButton(
+                      onPressed: () async {
+                        String enteredMeaning = meaningController.text;
+                        String wordKey = widget.wordKey;
+
+                        await firebaseController.handleUpdateMeaning(
+                            enteredMeaning, username, wordKey);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.teal,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(90.0),
+                        ),
+                      ),
+                      child: Icon(
+                        Icons.check,
+                        size: 30,
+                        color: Colors.white,
+                      ))
+                ],
+              ),
+            ),
+            Positioned(
+              top: 300,
+              left: 0,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: Visibility(
+                  visible:
+                      isVisible, // Use the isVisible state to control visibility
+                  child: SizedBox(
+                    width: 250, // Set the maximum width as needed
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(8.0, 15.0, 0.0, 0.0),
+                      child: Text(
+                        capitalize(widget.meaning),
+                        style: TextStyle(
+                          color: Colors.black45,
+                          fontSize: 20,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
-        body: const Center(
-          child: Text('Test Vocab'),
-        ));
+      ),
+    );
   }
 }
