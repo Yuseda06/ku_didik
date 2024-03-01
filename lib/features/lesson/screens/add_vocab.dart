@@ -229,7 +229,8 @@ class _AddVocabState extends State<AddVocab> {
             (b.value['timestamp'] ?? 0).compareTo(a.value['timestamp'] ?? 0));
 
       // sortedValues = sortedValues.take(10).toList();
-      sortedValues = sortedValues.sublist(int.parse(start), int.parse(end));
+      sortedValues =
+          sortedValues.sublist(int.parse(start) - 1, int.parse(end) - 1);
 
       for (var entry in sortedValues) {
         words.add(Word(
