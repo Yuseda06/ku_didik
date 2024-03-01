@@ -32,6 +32,16 @@ class _TestVocabState extends State<TestVocab> {
       appBar: RoundedAppBar(title: 'Test Your Vocab!'),
       body: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text('Current Score:'),
+                Text(''),
+              ],
+            ),
+          ),
           Expanded(
             child: StreamBuilder<void>(
                 stream: _refreshController.stream,
