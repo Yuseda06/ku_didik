@@ -7,8 +7,8 @@ import 'package:flutter/widgets.dart';
 import 'package:ku_didik/common_widgets/didik_drawer.dart';
 import 'package:ku_didik/features/authentication/models/users.dart';
 import 'package:provider/provider.dart';
-import 'package:ku_didik/utils/theme/profile_provider.dart';
-import 'package:ku_didik/utils/theme/username_provider.dart';
+import 'package:ku_didik/utils/provider/profile_provider.dart';
+import 'package:ku_didik/utils/provider/username_provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);

@@ -10,9 +10,10 @@ import 'package:ku_didik/home_page.dart';
 import 'package:ku_didik/login_page.dart';
 import 'package:ku_didik/signup_page.dart';
 import 'package:ku_didik/utils/pick_image.dart';
+import 'package:ku_didik/utils/provider/score_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:ku_didik/utils/theme/profile_provider.dart';
-import 'package:ku_didik/utils/theme/username_provider.dart';
+import 'package:ku_didik/utils/provider/profile_provider.dart';
+import 'package:ku_didik/utils/provider/username_provider.dart';
 import 'package:flutter_langdetect/flutter_langdetect.dart' as langdetect;
 
 void main() async {
@@ -42,6 +43,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (context) => ProfileProvider()),
         ChangeNotifierProvider(create: (context) => UsernameProvider()),
+        ChangeNotifierProvider(create: (context) => ScoreProvider()),
         // Add more providers if needed
       ],
       child: MyApp(),

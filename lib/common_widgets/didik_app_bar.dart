@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:ku_didik/utils/theme/profile_provider.dart';
+import 'package:ku_didik/utils/provider/profile_provider.dart';
 import 'package:provider/provider.dart';
 
 class RoundedAppBar extends StatefulWidget implements PreferredSizeWidget {

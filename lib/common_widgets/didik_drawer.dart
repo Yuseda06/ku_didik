@@ -5,8 +5,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
-import 'package:ku_didik/utils/theme/profile_provider.dart';
-import 'package:ku_didik/utils/theme/username_provider.dart';
+import 'package:ku_didik/utils/provider/profile_provider.dart';
+import 'package:ku_didik/utils/provider/username_provider.dart';
 
 class DidikDrawer extends StatefulWidget {
   @override

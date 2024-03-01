@@ -5,7 +5,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:ku_didik/common_widgets/didik_app_bar.dart';
 import 'package:ku_didik/features/lesson/controllers/firebase_controller.dart';
-import 'package:ku_didik/utils/theme/username_provider.dart';
+import 'package:ku_didik/utils/provider/username_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:translator/translator.dart' as translator_package;
 import 'package:flutter_tts/flutter_tts.dart';

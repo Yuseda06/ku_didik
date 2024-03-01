@@ -8,7 +8,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:ku_didik/common_widgets/didik_app_bar.dart';
 import 'package:ku_didik/test.dart';
-import 'package:ku_didik/utils/theme/username_provider.dart';
+import 'package:ku_didik/utils/provider/username_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_langdetect/flutter_langdetect.dart' as langdetect;
 
