@@ -7,7 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:ku_didik/common_widgets/didik_app_bar.dart';
+import 'package:ku_didik/features/lesson/controllers/firebase_controller.dart';
 import 'package:ku_didik/test.dart';
+import 'package:ku_didik/utils/provider/score_provider.dart';
 import 'package:ku_didik/utils/provider/username_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_langdetect/flutter_langdetect.dart' as langdetect;
@@ -28,17 +30,25 @@ class _TestVocabState extends State<TestVocab> {
     final usernameProvider = Provider.of<UsernameProvider>(context);
     String username = usernameProvider.username ?? '';
 
+    final scoreProvider = Provider.of<ScoreProvider>(context);
+    String score = scoreProvider.score ?? '';
+
+    initState() {
+      getScore(username, context);
+      super.initState();
+    }
+
     return Scaffold(
       appBar: RoundedAppBar(title: 'Test Your Vocab!'),
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.only(top: 30.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Text('Current Score:'),
-                Text(''),
+                Text(score),
               ],
             ),
           ),

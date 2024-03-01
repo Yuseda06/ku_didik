@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:ku_didik/utils/provider/score_provider.dart';
+import 'package:provider/provider.dart';
 
 class FirebaseController {
   Future<void> handleDeleteWord(String word, String username) async {
@@ -133,9 +135,8 @@ Future<int> _retrieveWordCount(String username) async {
   return 0;
 }
 
-Future<int> getScore(String username, BuildContext context) async {
+Future<void> getScore(String username, BuildContext context) async {
   final user = FirebaseAuth.instance.currentUser;
-
   if (user != null) {
     try {
       DocumentSnapshot userDoc = await FirebaseFirestore.instance
@@ -146,10 +147,11 @@ Future<int> getScore(String username, BuildContext context) async {
       // Access the 'score' field from the document
       dynamic score = userDoc.get('score');
 
-      // Print the score
-      print('Current score: $score');
+      print('score: $score');
 
-      return int.parse(score);
+      Provider.of<ScoreProvider>(context, listen: false)
+          .setScore(score.toString());
+
       // You can use the score as needed in your application
 
       // Close the modal sheet
@@ -157,5 +159,4 @@ Future<int> getScore(String username, BuildContext context) async {
       print('Failed to get score in Firestore: $error');
     }
   }
-  return 0;
 }
