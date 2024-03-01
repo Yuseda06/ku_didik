@@ -47,27 +47,6 @@ class _AddVocabState extends State<AddVocab> {
     String start = startController.text;
     String end = endController.text;
 
-    print('start: $start');
-    print('end: $end  ');
-
-    // _refresh();
-
-    // try {
-    //   final start = int.parse(startController.text);
-    //   final end = int.parse(endController.text);
-
-    //   // Use the parsed start and end values as needed
-    //   // ...
-    // } catch (e) {
-    //   // Handle the parsing error here
-    //   print('Invalid input: $e');
-
-    //   // You can provide default values or show an error message to the user
-    //   // For example:
-    //   // final start = 0;
-    //   // final end = 0;
-    // }
-
     return Scaffold(
       appBar: RoundedAppBar(title: 'Add Your Vocabulary'),
       body: Column(

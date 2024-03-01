@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -48,7 +49,7 @@ class _TestVocabState extends State<TestVocab> {
                           options: CarouselOptions(
                             enableInfiniteScroll: false,
                             autoPlay: autoPlay,
-                            height: 600.0,
+                            height: MediaQuery.of(context).size.height * 0.6,
                             enlargeCenterPage: true,
                           ),
                           items: words.map((word) {
@@ -89,10 +90,12 @@ Future<List<Word>> _getData(String username) async {
           (b.value['timestamp'] ?? 0).compareTo(a.value['timestamp'] ?? 0));
 
     // Take only 20 items
-    sortedValues = sortedValues.take(1).toList();
+    sortedValues = sortedValues.toList();
 
     // Randomize the order
     sortedValues.shuffle();
+
+    sortedValues = sortedValues.take(1).toList();
 
     for (var entry in sortedValues) {
       words.add(Word(
@@ -186,126 +189,151 @@ class CarouselItem extends StatefulWidget {
 }
 
 class _CarouselItemState extends State<CarouselItem> {
-  bool isVisible = true;
+  bool isVisible = false;
+  bool isCorrect = false; // Added variable to track correctness
   FlutterTts flutterTts = FlutterTts();
   TextEditingController meaningController = TextEditingController();
+  FocusNode meaningFocusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
     final usernameProvider = Provider.of<UsernameProvider>(context);
     String username = usernameProvider.username ?? '';
+
+    Widget resultWidget() {
+      if (isVisible) {
+        if (isCorrect) {
+          return Padding(
+            padding: const EdgeInsets.only(left: 10),
+            child: SizedBox(
+              width: 250,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(8.0, 15.0, 0.0, 0.0),
+                child: Text(
+                  capitalize(widget.meaning),
+                  style: TextStyle(
+                    color: Colors.black45,
+                    fontSize: 20,
+                  ),
+                ),
+              ),
+            ),
+          );
+        } else {
+          return Padding(
+            padding: const EdgeInsets.only(left: 10),
+            child: SizedBox(
+              width: 250,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(8.0, 15.0, 0.0, 0.0),
+                child: Text(
+                  'Wrong! The correct meaning is: ' +
+                      capitalize(widget.meaning),
+                  style: TextStyle(
+                    color: Colors.black45,
+                    fontSize: 20,
+                  ),
+                ),
+              ),
+            ),
+          );
+        }
+      } else {
+        return Container();
+      }
+    }
+
     return Container(
-      margin:
-          EdgeInsets.all(8.0), // Add margin for better visibility of the shadow
+      margin: EdgeInsets.all(8.0),
       decoration: BoxDecoration(
-        color: Colors.white, // Set the background color of the card
-        borderRadius:
-            BorderRadius.circular(16.0), // Adjust the radius as needed
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16.0),
         boxShadow: [
           BoxShadow(
             color: const Color.fromARGB(255, 234, 234, 233),
-            blurRadius: 10.0, // Adjust the blur radius as needed
-            spreadRadius: 5.0, // Adjust the spread radius as needed
+            blurRadius: 10.0,
+            spreadRadius: 5.0,
           ),
         ],
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(5.0),
-        child: Stack(
-          children: [
-            ListTile(
-              title: TextButton(
-                style: TextButton.styleFrom(
-                  backgroundColor: Colors.transparent,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0),
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(5.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              ListTile(
+                title: TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
                   ),
-                ),
-                onPressed: () {
-                  _speakWord(widget.word, flutterTts);
-                },
-                child: Text(
-                  capitalize(widget.word),
-                  style: TextStyle(
-                    color: const Color.fromARGB(255, 138, 106, 7),
-                    fontSize: 23,
+                  onPressed: () {
+                    _speakWord(widget.word, flutterTts);
+                  },
+                  child: Text(
+                    capitalize(widget.word),
+                    style: TextStyle(
+                      color: const Color.fromARGB(255, 138, 106, 7),
+                      fontSize: 23,
+                    ),
                   ),
                 ),
               ),
-            ),
-            Positioned(
-              top: 150,
-              left: 0,
-              child: Column(
-                children: [
-                  SizedBox(
-                    width: 283,
-                    child: Padding(
-                        padding: const EdgeInsets.fromLTRB(5.0, 15.0, 0.0, 0.0),
-                        child: TextField(
-                          maxLines: null,
-                          controller: meaningController,
-                          decoration: InputDecoration(
-                            labelText: 'Enter meaning',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                          ),
-                          onChanged: (value) {
-                            setState(() {
-                              isVisible = value.isEmpty;
-                            });
-                          },
-                        )),
-                  ),
-                  SizedBox(height: 10),
-                  ElevatedButton(
-                      onPressed: () async {
-                        String enteredMeaning = meaningController.text;
-                        String wordKey = widget.wordKey;
-
-                        await firebaseController.handleUpdateMeaning(
-                            enteredMeaning, username, wordKey);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.teal,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(90.0),
-                        ),
-                      ),
-                      child: Icon(
-                        Icons.check,
-                        size: 30,
-                        color: Colors.white,
-                      ))
-                ],
-              ),
-            ),
-            Positioned(
-              top: 300,
-              left: 0,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 10),
-                child: Visibility(
-                  visible:
-                      isVisible, // Use the isVisible state to control visibility
-                  child: SizedBox(
-                    width: 250, // Set the maximum width as needed
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(8.0, 15.0, 0.0, 0.0),
-                      child: Text(
-                        capitalize(widget.meaning),
-                        style: TextStyle(
-                          color: Colors.black45,
-                          fontSize: 20,
-                        ),
+              SizedBox(
+                width: 283,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(5.0, 15.0, 0.0, 0.0),
+                  child: TextField(
+                    focusNode: meaningFocusNode,
+                    maxLines: null,
+                    controller: meaningController,
+                    decoration: InputDecoration(
+                      labelText: 'Enter meaning',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+              SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: () async {
+                  String enteredMeaning = meaningController.text;
+                  String wordKey = widget.wordKey;
+
+                  // Check if the entered meaning is correct
+                  isCorrect = enteredMeaning == widget.meaning;
+
+                  // Update meaning in Firebase
+                  await firebaseController.handleUpdateMeaning(
+                      enteredMeaning, username, wordKey);
+                  meaningFocusNode.unfocus();
+                  setState(() {
+                    isVisible = true;
+                  }); // Trigger a rebuild to update the UI
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.teal,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(90.0),
+                  ),
+                ),
+                child: Text(
+                  'Check!',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                  ),
+                ),
+              ),
+              resultWidget(), // Display correct/wrong message
+            ],
+          ),
         ),
       ),
     );
