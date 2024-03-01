@@ -43,12 +43,15 @@ class _TestVocabState extends State<TestVocab> {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 30.0),
+            padding:
+                const EdgeInsets.only(top: 30.0, left: 100.0, right: 100.0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Current Score:'),
-                Text(score),
+                Text('Current Score:', style: TextStyle(fontSize: 20)),
+                Text(score,
+                    style:
+                        TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
               ],
             ),
           ),
@@ -333,6 +336,7 @@ class _CarouselItemState extends State<CarouselItem> {
                   await firebaseController.handleUpdateMeaning(
                       enteredMeaning, username, wordKey);
                   meaningFocusNode.unfocus();
+                  // updateScore(username, 'correct', 12);
                   setState(() {
                     isVisible = true;
                   }); // Trigger a rebuild to update the UI
