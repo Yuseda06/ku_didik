@@ -33,11 +33,6 @@ class _TestVocabState extends State<TestVocab> {
     final scoreProvider = Provider.of<ScoreProvider>(context);
     String score = scoreProvider.score ?? '';
 
-    initState() {
-      getScore(username, context);
-      super.initState();
-    }
-
     return Scaffold(
       appBar: RoundedAppBar(title: 'Test Your Vocab!'),
       body: Column(
@@ -50,8 +45,10 @@ class _TestVocabState extends State<TestVocab> {
               children: [
                 Text('Current Score:', style: TextStyle(fontSize: 20)),
                 Text(score,
-                    style:
-                        TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+                    style: TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.teal)),
               ],
             ),
           ),

@@ -135,8 +135,9 @@ Future<int> _retrieveWordCount(String username) async {
   return 0;
 }
 
-Future<void> getScore(String username, BuildContext context) async {
+Future<String> getScore(String username, BuildContext context) async {
   final user = FirebaseAuth.instance.currentUser;
+
   if (user != null) {
     try {
       DocumentSnapshot userDoc = await FirebaseFirestore.instance
@@ -147,18 +148,19 @@ Future<void> getScore(String username, BuildContext context) async {
       // Access the 'score' field from the document
       dynamic score = userDoc.get('score');
 
-      print('score: $score');
+      String scoreString = score.toString();
 
-      Provider.of<ScoreProvider>(context, listen: false)
-          .setScore(score.toString());
+      Provider.of<ScoreProvider>(context, listen: false).setScore(scoreString);
 
-      // You can use the score as needed in your application
+      print('score: $scoreString');
 
+      return scoreString;
       // Close the modal sheet
     } catch (error) {
       print('Failed to get score in Firestore: $error');
     }
   }
+  return '0';
 }
 
 Future<void> updateScore(String username, String status, int score) async {

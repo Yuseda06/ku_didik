@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:ku_didik/common_widgets/didik_drawer.dart';
 import 'package:ku_didik/features/authentication/models/users.dart';
+import 'package:ku_didik/features/lesson/controllers/firebase_controller.dart';
 import 'package:provider/provider.dart';
 import 'package:ku_didik/utils/provider/profile_provider.dart';
 import 'package:ku_didik/utils/provider/username_provider.dart';
@@ -36,6 +37,10 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final profileProvider = Provider.of<ProfileProvider>(context);
     final usernameProvider = Provider.of<UsernameProvider>(context);
+
+    String username = usernameProvider.username ?? '';
+
+    getScore(username, context);
 
     String getGreeting() {
       var hour = DateTime.now().hour;
