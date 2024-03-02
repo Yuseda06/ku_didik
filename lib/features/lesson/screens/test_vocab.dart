@@ -220,6 +220,9 @@ class _CarouselItemState extends State<CarouselItem> {
     final usernameProvider = Provider.of<UsernameProvider>(context);
     String username = usernameProvider.username ?? '';
 
+    final scoreProvider = Provider.of<ScoreProvider>(context);
+    String score = scoreProvider.score ?? '';
+
     Widget resultWidget() {
       if (isVisible) {
         if (isCorrect) {
@@ -230,7 +233,7 @@ class _CarouselItemState extends State<CarouselItem> {
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(8.0, 15.0, 0.0, 0.0),
                 child: Text(
-                  capitalize(widget.meaning),
+                  'Correct! ' + capitalize(widget.meaning),
                   style: TextStyle(
                     color: Colors.black45,
                     fontSize: 20,
@@ -333,10 +336,13 @@ class _CarouselItemState extends State<CarouselItem> {
                   await firebaseController.handleUpdateMeaning(
                       enteredMeaning, username, wordKey);
                   meaningFocusNode.unfocus();
-                  // updateScore(username, 'correct', 12);
+
                   setState(() {
                     isVisible = true;
-                  }); // Trigger a rebuild to update the UI
+                  });
+
+                  updateScore(username, 'correct', int.parse(score), context);
+                  // Trigger a rebuild to update the UI
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.teal,

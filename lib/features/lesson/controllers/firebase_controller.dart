@@ -163,33 +163,29 @@ Future<String> getScore(String username, BuildContext context) async {
   return '0';
 }
 
-Future<void> updateScore(String username, String status, int score) async {
+Future<void> updateScore(
+    String username, String status, int score, BuildContext context) async {
   print('newScore: $username');
   print('newScore: $status');
   try {
     final user = FirebaseAuth.instance.currentUser;
 
-    // int newScore = int.parse(score);
-
-    // if (status == 'correct') {
-    //   newScore += 10;
-    // } else if (status == 'wrong') {
-    //   newScore -= 5;
-    // }
-
     print('newScore: $score');
-    // if (user != null) {
-    //   try {
-    //     await FirebaseFirestore.instance
-    //         .collection('users')
-    //         .doc(user.uid)
-    //         .update({
-    //       'count': await _retrieveScore(username),
-    //     });
-    //   } catch (error) {
-    //     print('Failed to update profile in Firestore: $error');
-    //   }
-    // }
+    if (user != null) {
+      try {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .update({
+          'score': score + 10,
+        });
+
+        // Provider.of<ScoreProvider>(context, listen: false)
+        //     .setScore((score + 10).toString());
+      } catch (error) {
+        print('Failed to update profile in Firestore: $error');
+      }
+    }
   } on Exception catch (e) {
     print('Error))))))))))))))): $e');
   }
