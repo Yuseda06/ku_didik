@@ -194,7 +194,7 @@ class _HomePageState extends State<HomePage> {
                   List<Map> items =
                       document.map((e) => e.data() as Map).toList();
                   items.sort((a, b) =>
-                      (b['wordCount'] as int).compareTo(a['wordCount'] as int));
+                      (b['score'] as int).compareTo(a['score'] as int));
                   return Padding(
                     padding: const EdgeInsets.only(top: 150),
                     child: Column(
@@ -261,7 +261,7 @@ class _HomePageState extends State<HomePage> {
                                             padding:
                                                 const EdgeInsets.only(left: 10),
                                             child: Text(
-                                                items[index]['wordCount']
+                                                items[index]['score']
                                                     .toString(),
                                                 style: TextStyle(
                                                     color: Colors.amber,

@@ -103,6 +103,19 @@ class _DidikDrawerState extends State<DidikDrawer> {
               Navigator.pushNamed(context, '/test_vocab');
             },
           ),
+          // ListTile(
+          //   title: Row(
+          //     children: [
+          //       Icon(Icons.fitbit_outlined, color: Colors.black45),
+          //       SizedBox(width: 10),
+          //       Text('Quiz',
+          //           style: TextStyle(fontSize: 18, color: Colors.teal[600])),
+          //     ],
+          //   ),
+          //   onTap: () {
+          //     Navigator.pushNamed(context, '/vocab_quiz');
+          //   },
+          // ),
           Spacer(), // Add Spacer to push "Sign Out" to the bottom
           Container(
             padding: EdgeInsets.all(8),

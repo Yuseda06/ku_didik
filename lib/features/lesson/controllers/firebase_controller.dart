@@ -165,13 +165,8 @@ Future<String> getScore(String username, BuildContext context) async {
 
 Future<void> updateScore(
     String username, String status, int score, BuildContext context) async {
-  print('newScore: $username');
-  print('newScore: $status');
   try {
     final user = FirebaseAuth.instance.currentUser;
-
-    print(
-        'BEFOREscorescorescorescorescorescorescorescorescorescorescore: $score');
 
     // int score = int.parse(await getScore(username, context));
 
@@ -180,9 +175,6 @@ Future<void> updateScore(
     } else {
       score = score - 5;
     }
-
-    print('statusstatusstatusstatusstatusstatusstatusstatusstatus: $status');
-    print('scorescorescorescorescorescorescorescorescorescorescore: $score');
 
     if (user != null) {
       try {
@@ -202,4 +194,38 @@ Future<void> updateScore(
   } on Exception catch (e) {
     print('Error))))))))))))))): $e');
   }
+}
+
+Future<List<Map<String, dynamic>>> getUserDataList(BuildContext context) async {
+  final user = FirebaseAuth.instance.currentUser;
+
+  if (user != null) {
+    try {
+      QuerySnapshot userData = await FirebaseFirestore.instance
+          .collection('users')
+          .orderBy('score',
+              descending: true) // Sort by score in descending order
+          .get();
+
+      List<Map<String, dynamic>> userList =
+          userData.docs.map((DocumentSnapshot document) {
+        Map<String, dynamic> userData = document.data() as Map<String, dynamic>;
+        return userData;
+      }).toList();
+
+      // Update the score in the provider
+      if (userList.isNotEmpty) {
+        Provider.of<ScoreProvider>(context, listen: false)
+            .setScore(userList[0]['score'].toString());
+      }
+
+      print('User List: $userList');
+
+      return userList;
+    } catch (error) {
+      print('Failed to get user data list in Firestore: $error');
+    }
+  }
+
+  return [];
 }

@@ -64,6 +64,7 @@ class MyApp extends StatelessWidget {
         '/add_vocab': (context) => const AddVocab(),
         '/pick_image': (context) => const PickImage(),
         '/test_vocab': (context) => const TestVocab(),
+        '/vocab_quiz': (context) => VocabularyQuizScreen(),
       },
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
