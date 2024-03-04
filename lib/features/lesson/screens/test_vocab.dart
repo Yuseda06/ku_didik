@@ -227,6 +227,8 @@ class _CarouselItemState extends State<CarouselItem> {
     final scoreProvider = Provider.of<ScoreProvider>(context);
     String score = scoreProvider.score ?? '';
 
+    meaningFocusNode.requestFocus();
+
     Widget resultWidget() {
       if (isVisible) {
         if (isCorrect) {
@@ -235,15 +237,19 @@ class _CarouselItemState extends State<CarouselItem> {
             child: SizedBox(
               width: 250,
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(8.0, 15.0, 0.0, 0.0),
-                child: Text(
-                  'Correct! ' + capitalize(widget.meaning),
-                  style: TextStyle(
-                    color: Colors.black45,
-                    fontSize: 20,
-                  ),
-                ),
-              ),
+                  padding: const EdgeInsets.fromLTRB(8.0, 15.0, 0.0, 0.0),
+                  child: Column(
+                    children: [
+                      Text(
+                        'Correct! You will get 10 points!',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.teal,
+                          fontSize: 35,
+                        ),
+                      ),
+                    ],
+                  )),
             ),
           );
         } else {
@@ -253,13 +259,36 @@ class _CarouselItemState extends State<CarouselItem> {
               width: 250,
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(8.0, 15.0, 0.0, 0.0),
-                child: Text(
-                  'Wrong! The correct meaning is: ' +
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Wrong! The correct meaning is:',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 25,
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    Text(
                       capitalize(widget.meaning),
-                  style: TextStyle(
-                    color: Colors.black45,
-                    fontSize: 20,
-                  ),
+                      style: TextStyle(
+                        color: Colors.black45,
+                        fontSize: 20,
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    Text(
+                      '- 5 points!',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 25,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -365,12 +394,9 @@ class _CarouselItemState extends State<CarouselItem> {
                       onPressed: () async {
                         isVisible = false;
                         // meaningController.clear();
-                        //           meaningFocusNode.requestFocus();
 
                         updateScore(username, isCorrect ? 'correct' : 'wrong',
                             int.parse(score), context);
-
-                        setState(() {});
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.teal,
