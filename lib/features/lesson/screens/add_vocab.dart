@@ -37,18 +37,37 @@ class _AddVocabState extends State<AddVocab> {
   final TextEditingController endController = TextEditingController();
   final _refreshController = StreamController<void>.broadcast();
   FirebaseController firebaseController = FirebaseController();
-  bool autoPlay = false;
+  bool autoPlay = true;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     final usernameProvider = Provider.of<UsernameProvider>(context);
     String username = usernameProvider.username ?? '';
 
-    String start = startController.text;
-    String end = endController.text;
+    String start = startController.text.isEmpty ? "1" : startController.text;
+    String end = endController.text.isEmpty ? "2" : endController.text;
 
+    String wordCount = "0";
+
+    Future<void> fetchData() async {
+      try {
+        wordCount = await retrieveWordCount(username)
+            .toString(); // Replace "username" with the actual username
+        print('Word count from AnotherScreen: $wordCount');
+      } catch (error) {
+        print('Error fetching word count: $error');
+      }
+    }
+
+    fetchData();
     return Scaffold(
-      appBar: RoundedAppBar(title: 'Add Your Vocabulary'),
+      appBar: RoundedAppBar(title: wordCount),
       body: Column(
         children: [
           Container(

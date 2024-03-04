@@ -241,11 +241,20 @@ class _CarouselItemState extends State<CarouselItem> {
                   child: Column(
                     children: [
                       Text(
-                        'Correct! You will get 10 points!',
+                        'Correct!',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.teal,
                           fontSize: 35,
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      Text(
+                        'another 10 more points added!',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.black54,
+                          fontSize: 20,
                         ),
                       ),
                     ],
@@ -358,61 +367,46 @@ class _CarouselItemState extends State<CarouselItem> {
                 ),
               ),
               SizedBox(height: 10),
-              !isVisible
-                  ? ElevatedButton(
-                      onPressed: () async {
-                        String enteredMeaning = meaningController.text;
-                        String wordKey = widget.wordKey;
 
-                        isCorrect = enteredMeaning == widget.meaning;
+              Visibility(
+                visible: !isVisible,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    setState(() {
+                      isVisible = true;
+                    });
 
-                        meaningFocusNode.unfocus();
+                    String enteredMeaning = meaningController.text;
 
-                        setState(() {
-                          isVisible = true;
-                        });
+                    isCorrect = enteredMeaning == widget.meaning;
 
-                        // Trigger a rebuild to update the UI
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.teal,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(90.0),
-                        ),
-                      ),
-                      child: Text(
-                        'Check!',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                        ),
-                      ),
-                    )
-                  : Container(),
-              isVisible
-                  ? ElevatedButton(
-                      onPressed: () async {
-                        isVisible = false;
-                        // meaningController.clear();
+                    meaningFocusNode.unfocus();
 
+                    Future.delayed(Duration(seconds: 3), () {
+                      setState(() {
                         updateScore(username, isCorrect ? 'correct' : 'wrong',
                             int.parse(score), context);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.teal,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(90.0),
-                        ),
-                      ),
-                      child: Text(
-                        'Next Word!',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                        ),
-                      ),
-                    )
-                  : Container(),
+                      });
+                    });
+
+                    // Trigger a rebuild to update the UI
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.teal,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(90.0),
+                    ),
+                  ),
+                  child: Text(
+                    'Check!',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                    ),
+                  ),
+                ),
+              ),
+
               resultWidget(),
 
               // Display correct/wrong message

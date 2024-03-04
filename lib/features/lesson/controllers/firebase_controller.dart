@@ -86,9 +86,9 @@ class FirebaseController {
             .collection('users')
             .doc(user.uid)
             .update({
-          'wordCount': await _retrieveWordCount(username),
+          'wordCount': await retrieveWordCount(username),
         });
-        print(_retrieveWordCount(username));
+        print(retrieveWordCount(username));
 //close the model sheet
       } catch (error) {
         print('Failed to update profile in Firestore: $error');
@@ -97,7 +97,7 @@ class FirebaseController {
   }
 }
 
-Future<int> _retrieveWordCount(String username) async {
+Future<int> retrieveWordCount(String username) async {
   final user = FirebaseAuth.instance.currentUser;
   List<String> wordList = [];
   int wordCount = 0;
@@ -169,6 +169,8 @@ Future<void> updateScore(
     final user = FirebaseAuth.instance.currentUser;
 
     // int score = int.parse(await getScore(username, context));
+
+    print('Failed to update profile in Firestore: $status');
 
     if (status == 'correct') {
       score = score + 10;
