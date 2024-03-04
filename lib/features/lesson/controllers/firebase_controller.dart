@@ -170,18 +170,31 @@ Future<void> updateScore(
   try {
     final user = FirebaseAuth.instance.currentUser;
 
-    print('newScore: $score');
+    print(
+        'BEFOREscorescorescorescorescorescorescorescorescorescorescore: $score');
+
+    // int score = int.parse(await getScore(username, context));
+
+    if (status == 'correct') {
+      score = score + 10;
+    } else {
+      score = score - 5;
+    }
+
+    print('statusstatusstatusstatusstatusstatusstatusstatusstatus: $status');
+    print('scorescorescorescorescorescorescorescorescorescorescore: $score');
+
     if (user != null) {
       try {
         await FirebaseFirestore.instance
             .collection('users')
             .doc(user.uid)
             .update({
-          'score': score + 10,
+          'score': score,
         });
 
-        // Provider.of<ScoreProvider>(context, listen: false)
-        //     .setScore((score + 10).toString());
+        Provider.of<ScoreProvider>(context, listen: false)
+            .setScore((score).toString());
       } catch (error) {
         print('Failed to update profile in Firestore: $error');
       }

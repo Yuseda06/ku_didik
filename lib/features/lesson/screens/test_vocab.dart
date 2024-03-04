@@ -39,21 +39,21 @@ class _TestVocabState extends State<TestVocab> {
       appBar: RoundedAppBar(title: 'Test Your Vocab!'),
       body: Column(
         children: [
-          // Padding(
-          //   padding:
-          //       const EdgeInsets.only(top: 30.0, left: 100.0, right: 100.0),
-          //   child: Row(
-          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //     children: [
-          //       Text('Current Score:', style: TextStyle(fontSize: 20)),
-          //       Text(score,
-          //           style: TextStyle(
-          //               fontSize: 25,
-          //               fontWeight: FontWeight.bold,
-          //               color: Colors.teal)),
-          //     ],
-          //   ),
-          // ),
+          Padding(
+            padding:
+                const EdgeInsets.only(top: 30.0, left: 100.0, right: 100.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Current Score:', style: TextStyle(fontSize: 20)),
+                Text(score,
+                    style: TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.teal)),
+              ],
+            ),
+          ),
           Expanded(
             child: StreamBuilder<void>(
                 stream: _refreshController.stream,
@@ -335,20 +335,14 @@ class _CarouselItemState extends State<CarouselItem> {
                         String enteredMeaning = meaningController.text;
                         String wordKey = widget.wordKey;
 
-                        // Check if the entered meaning is correct
                         isCorrect = enteredMeaning == widget.meaning;
 
-                        // Update meaning in Firebase
-                        // await firebaseController.handleUpdateMeaning(
-                        //     enteredMeaning, username, wordKey);
                         meaningFocusNode.unfocus();
 
                         setState(() {
                           isVisible = true;
                         });
 
-                        updateScore(
-                            username, 'correct', int.parse(score), context);
                         // Trigger a rebuild to update the UI
                       },
                       style: ElevatedButton.styleFrom(
@@ -373,13 +367,9 @@ class _CarouselItemState extends State<CarouselItem> {
                         // meaningController.clear();
                         //           meaningFocusNode.requestFocus();
 
-                        _TestVocabState? testVocabState =
-                            context.findAncestorStateOfType<_TestVocabState>();
+                        updateScore(username, isCorrect ? 'correct' : 'wrong',
+                            int.parse(score), context);
 
-                        if (testVocabState != null) {
-                          widget.refresh
-                              .add(null); // Add this line to trigger a rebuild
-                        }
                         setState(() {});
                       },
                       style: ElevatedButton.styleFrom(
