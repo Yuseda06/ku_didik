@@ -76,10 +76,10 @@ class _TestVocabState extends State<TestVocab> {
                           ),
                           items: words.map((word) {
                             return CarouselItem(
-                              word: word.word,
-                              meaning: word.meaning,
-                              wordKey: word.key,
-                            );
+                                word: word.word,
+                                meaning: word.meaning,
+                                wordKey: word.key,
+                                refresh: _refreshController);
                           }).toList(),
                         );
                       }
@@ -199,11 +199,13 @@ class CarouselItem extends StatefulWidget {
   final String word;
   final String meaning;
   final String wordKey;
+  final StreamController<void> refresh;
 
   const CarouselItem({
     required this.word,
     required this.meaning,
     required this.wordKey,
+    required this.refresh,
   });
 
   @override
@@ -313,6 +315,7 @@ class _CarouselItemState extends State<CarouselItem> {
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(5.0, 15.0, 0.0, 0.0),
                   child: TextField(
+                    enabled: isVisible ? false : true,
                     focusNode: meaningFocusNode,
                     maxLines: null,
                     controller: meaningController,
@@ -366,10 +369,17 @@ class _CarouselItemState extends State<CarouselItem> {
               isVisible
                   ? ElevatedButton(
                       onPressed: () async {
-                        meaningFocusNode.requestFocus();
                         isVisible = false;
-                        meaningController.clear();
+                        // meaningController.clear();
+                        //           meaningFocusNode.requestFocus();
 
+                        _TestVocabState? testVocabState =
+                            context.findAncestorStateOfType<_TestVocabState>();
+
+                        if (testVocabState != null) {
+                          widget.refresh
+                              .add(null); // Add this line to trigger a rebuild
+                        }
                         setState(() {});
                       },
                       style: ElevatedButton.styleFrom(
