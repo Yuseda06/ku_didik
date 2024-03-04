@@ -11,6 +11,7 @@ import 'package:ku_didik/features/lesson/controllers/firebase_controller.dart';
 import 'package:ku_didik/test.dart';
 import 'package:ku_didik/utils/provider/score_provider.dart';
 import 'package:ku_didik/utils/provider/username_provider.dart';
+import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_langdetect/flutter_langdetect.dart' as langdetect;
 
@@ -23,7 +24,8 @@ class TestVocab extends StatefulWidget {
 
 class _TestVocabState extends State<TestVocab> {
   bool autoPlay = false;
-  final _refreshController = StreamController<void>.broadcast();
+  final StreamController<void> _refreshController =
+      StreamController<void>.broadcast();
 
   @override
   Widget build(BuildContext context) {
@@ -37,21 +39,21 @@ class _TestVocabState extends State<TestVocab> {
       appBar: RoundedAppBar(title: 'Test Your Vocab!'),
       body: Column(
         children: [
-          Padding(
-            padding:
-                const EdgeInsets.only(top: 30.0, left: 100.0, right: 100.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Current Score:', style: TextStyle(fontSize: 20)),
-                Text(score,
-                    style: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.teal)),
-              ],
-            ),
-          ),
+          // Padding(
+          //   padding:
+          //       const EdgeInsets.only(top: 30.0, left: 100.0, right: 100.0),
+          //   child: Row(
+          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //     children: [
+          //       Text('Current Score:', style: TextStyle(fontSize: 20)),
+          //       Text(score,
+          //           style: TextStyle(
+          //               fontSize: 25,
+          //               fontWeight: FontWeight.bold,
+          //               color: Colors.teal)),
+          //     ],
+          //   ),
+          // ),
           Expanded(
             child: StreamBuilder<void>(
                 stream: _refreshController.stream,
@@ -324,41 +326,70 @@ class _CarouselItemState extends State<CarouselItem> {
                 ),
               ),
               SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: () async {
-                  String enteredMeaning = meaningController.text;
-                  String wordKey = widget.wordKey;
+              !isVisible
+                  ? ElevatedButton(
+                      onPressed: () async {
+                        String enteredMeaning = meaningController.text;
+                        String wordKey = widget.wordKey;
 
-                  // Check if the entered meaning is correct
-                  isCorrect = enteredMeaning == widget.meaning;
+                        // Check if the entered meaning is correct
+                        isCorrect = enteredMeaning == widget.meaning;
 
-                  // Update meaning in Firebase
-                  await firebaseController.handleUpdateMeaning(
-                      enteredMeaning, username, wordKey);
-                  meaningFocusNode.unfocus();
+                        // Update meaning in Firebase
+                        // await firebaseController.handleUpdateMeaning(
+                        //     enteredMeaning, username, wordKey);
+                        meaningFocusNode.unfocus();
 
-                  setState(() {
-                    isVisible = true;
-                  });
+                        setState(() {
+                          isVisible = true;
+                        });
 
-                  updateScore(username, 'correct', int.parse(score), context);
-                  // Trigger a rebuild to update the UI
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.teal,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(90.0),
-                  ),
-                ),
-                child: Text(
-                  'Check!',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                  ),
-                ),
-              ),
-              resultWidget(), // Display correct/wrong message
+                        updateScore(
+                            username, 'correct', int.parse(score), context);
+                        // Trigger a rebuild to update the UI
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.teal,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(90.0),
+                        ),
+                      ),
+                      child: Text(
+                        'Check!',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                        ),
+                      ),
+                    )
+                  : Container(),
+              isVisible
+                  ? ElevatedButton(
+                      onPressed: () async {
+                        meaningFocusNode.requestFocus();
+                        isVisible = false;
+                        meaningController.clear();
+
+                        setState(() {});
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.teal,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(90.0),
+                        ),
+                      ),
+                      child: Text(
+                        'Next Word!',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                        ),
+                      ),
+                    )
+                  : Container(),
+              resultWidget(),
+
+              // Display correct/wrong message
             ],
           ),
         ),
