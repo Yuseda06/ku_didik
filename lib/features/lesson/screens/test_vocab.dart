@@ -27,6 +27,7 @@ class _TestVocabState extends State<TestVocab> {
   late BuildContext storedContext;
   late int scoreLate = 0;
   late String usernameLate = '';
+  late String wordEnteredLate = '';
 
   bool autoPlay = false;
   final StreamController<void> _refreshController =
@@ -359,7 +360,7 @@ class _CarouselItemState extends State<CarouselItem> {
         child: Padding(
           padding: const EdgeInsets.all(5.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               ListTile(
@@ -419,7 +420,7 @@ class _CarouselItemState extends State<CarouselItem> {
                   ),
                 ),
               ),
-              SizedBox(height: 10),
+              SizedBox(height: 20),
 
               Visibility(
                 visible: !isVisible,
@@ -460,8 +461,34 @@ class _CarouselItemState extends State<CarouselItem> {
                   ),
                 ),
               ),
-
+              SizedBox(height: 20),
               resultWidget(),
+              SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.only(top: 50),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    IconButton(
+                        onPressed: () {
+                          String enteredMeaning = meaningController.text;
+
+                          isCorrect = enteredMeaning.toLowerCase().trim() ==
+                              widget.meaning.toLowerCase().trim();
+                          updateScore(username, isCorrect ? 'correct' : 'wrong',
+                              int.parse(score), context);
+
+                          Navigator.of(context).pushReplacementNamed('/home');
+                        },
+                        icon: Icon(
+                          Icons.home_filled,
+                          size: 30,
+                          color: Colors.black54,
+                        )),
+                  ],
+                ),
+              )
 
               // Display correct/wrong message
             ],
