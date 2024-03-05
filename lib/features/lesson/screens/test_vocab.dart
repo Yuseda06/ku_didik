@@ -46,9 +46,9 @@ class _TestVocabState extends State<TestVocab> {
   }
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
-    updateScore(usernameLate, 'wrong', scoreLate, storedContext);
-    print("scoreLate $scoreLate"); // Do some stuff.
-    Navigator.of(storedContext).pushReplacementNamed('/home');
+    // updateScore(usernameLate, 'wrong', scoreLate, storedContext);
+    // print("scoreLate $scoreLate"); // Do some stuff.
+    // Navigator.of(storedContext).pushReplacementNamed('/home');
     return true;
   }
 
@@ -388,25 +388,25 @@ class _CarouselItemState extends State<CarouselItem> {
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(5.0, 15.0, 0.0, 0.0),
                   child: TextField(
-                    onTapOutside: (event) {
-                      setState(() {
-                        isVisible = true;
-                      });
+                    // onTapOutside: (event) {
+                    //   setState(() {
+                    //     isVisible = true;
+                    //   });
 
-                      String enteredMeaning = meaningController.text;
+                    //   String enteredMeaning = meaningController.text;
 
-                      isCorrect = enteredMeaning.toLowerCase().trim() ==
-                          widget.meaning.toLowerCase().trim();
+                    //   isCorrect = enteredMeaning.toLowerCase().trim() ==
+                    //       widget.meaning.toLowerCase().trim();
 
-                      meaningFocusNode.unfocus();
+                    //   meaningFocusNode.unfocus();
 
-                      Future.delayed(Duration(seconds: 3), () {
-                        setState(() {
-                          updateScore(username, isCorrect ? 'correct' : 'wrong',
-                              int.parse(score), context);
-                        });
-                      });
-                    },
+                    //   Future.delayed(Duration(seconds: 3), () {
+                    //     setState(() {
+                    //       updateScore(username, isCorrect ? 'correct' : 'wrong',
+                    //           int.parse(score), context);
+                    //     });
+                    //   });
+                    // },
                     enabled: isVisible ? false : true,
                     focusNode: meaningFocusNode,
                     // maxLines: null,
@@ -464,31 +464,31 @@ class _CarouselItemState extends State<CarouselItem> {
               SizedBox(height: 20),
               resultWidget(),
               SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.only(top: 50),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    IconButton(
-                        onPressed: () {
-                          String enteredMeaning = meaningController.text;
+              // Padding(
+              //   padding: const EdgeInsets.only(top: 50),
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.end,
+              //     crossAxisAlignment: CrossAxisAlignment.end,
+              //     children: [
+              //       IconButton(
+              //           onPressed: () {
+              //             String enteredMeaning = meaningController.text;
 
-                          isCorrect = enteredMeaning.toLowerCase().trim() ==
-                              widget.meaning.toLowerCase().trim();
-                          updateScore(username, isCorrect ? 'correct' : 'wrong',
-                              int.parse(score), context);
+              //             isCorrect = enteredMeaning.toLowerCase().trim() ==
+              //                 widget.meaning.toLowerCase().trim();
+              //             updateScore(username, isCorrect ? 'correct' : 'wrong',
+              //                 int.parse(score), context);
 
-                          Navigator.of(context).pushReplacementNamed('/home');
-                        },
-                        icon: Icon(
-                          Icons.home_filled,
-                          size: 30,
-                          color: Colors.black54,
-                        )),
-                  ],
-                ),
-              )
+              //             Navigator.of(context).pushReplacementNamed('/home');
+              //           },
+              //           icon: Icon(
+              //             Icons.home_filled,
+              //             size: 30,
+              //             color: Colors.black54,
+              //           )),
+              //     ],
+              //   ),
+              // )
 
               // Display correct/wrong message
             ],

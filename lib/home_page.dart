@@ -235,7 +235,7 @@ class _HomePageState extends State<HomePage> {
                                     base64Decode(base64Image.split(',').last);
                                 return Padding(
                                   padding:
-                                      const EdgeInsets.fromLTRB(30, 10, 30, 0),
+                                      const EdgeInsets.fromLTRB(20, 10, 20, 0),
                                   child: Card(
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(
@@ -272,16 +272,32 @@ class _HomePageState extends State<HomePage> {
                                             color: Colors.amber,
                                             size: 25,
                                           ),
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(left: 10),
-                                            child: Text(
-                                                items[index]['score']
-                                                    .toString(),
-                                                style: TextStyle(
-                                                    color: Colors.amber,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 20)),
+                                          Row(
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 10),
+                                                child: Text(
+                                                    items[index]['score']
+                                                        .toString(),
+                                                    style: TextStyle(
+                                                        color: Colors.amber,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 20)),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 10),
+                                                child: Text(
+                                                    'RM${((items[index]['score'] / 1000.toDouble()).toStringAsFixed(2))}',
+                                                    style: TextStyle(
+                                                        color: Colors.black54,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 15)),
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
