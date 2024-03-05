@@ -33,8 +33,6 @@ class _RoundedAppBarState extends State<RoundedAppBar> {
 
     final Image avatarImage = Image.memory(bytes, key: imageKey);
 
-    print('title: ${widget.title}');
-
     return Container(
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.only(
@@ -52,6 +50,7 @@ class _RoundedAppBarState extends State<RoundedAppBar> {
         ],
       ),
       child: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
         elevation: 0.0, // Remove app bar shadow
         title: Text(widget.title, style: const TextStyle(color: Colors.white)),

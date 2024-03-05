@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
@@ -23,17 +24,50 @@ class TestVocab extends StatefulWidget {
 }
 
 class _TestVocabState extends State<TestVocab> {
+  late BuildContext storedContext;
+  late int scoreLate = 0;
+  late String usernameLate = '';
+
   bool autoPlay = false;
   final StreamController<void> _refreshController =
       StreamController<void>.broadcast();
 
   @override
+  void initState() {
+    super.initState();
+    BackButtonInterceptor.add(myInterceptor);
+  }
+
+  @override
+  void dispose() {
+    BackButtonInterceptor.remove(myInterceptor);
+    super.dispose();
+  }
+
+  bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
+    updateScore(usernameLate, 'wrong', scoreLate, storedContext);
+    print("scoreLate $scoreLate"); // Do some stuff.
+    Navigator.of(storedContext).pushReplacementNamed('/home');
+    return true;
+  }
+
+  @override
   Widget build(BuildContext context) {
+    storedContext = context;
     final usernameProvider = Provider.of<UsernameProvider>(context);
     String username = usernameProvider.username ?? '';
+    usernameLate = username;
 
     final scoreProvider = Provider.of<ScoreProvider>(context);
     String score = scoreProvider.score ?? '';
+
+    scoreLate = int.parse(score);
+    void goToHome() {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => TestVocab()),
+      );
+    }
 
     return Scaffold(
       appBar: RoundedAppBar(title: 'Test Your Vocab!'),
@@ -353,9 +387,28 @@ class _CarouselItemState extends State<CarouselItem> {
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(5.0, 15.0, 0.0, 0.0),
                   child: TextField(
+                    onTapOutside: (event) {
+                      setState(() {
+                        isVisible = true;
+                      });
+
+                      String enteredMeaning = meaningController.text;
+
+                      isCorrect = enteredMeaning.toLowerCase().trim() ==
+                          widget.meaning.toLowerCase().trim();
+
+                      meaningFocusNode.unfocus();
+
+                      Future.delayed(Duration(seconds: 3), () {
+                        setState(() {
+                          updateScore(username, isCorrect ? 'correct' : 'wrong',
+                              int.parse(score), context);
+                        });
+                      });
+                    },
                     enabled: isVisible ? false : true,
                     focusNode: meaningFocusNode,
-                    maxLines: null,
+                    // maxLines: null,
                     controller: meaningController,
                     decoration: InputDecoration(
                       labelText: 'Enter meaning',
@@ -378,8 +431,8 @@ class _CarouselItemState extends State<CarouselItem> {
 
                     String enteredMeaning = meaningController.text;
 
-                    isCorrect = enteredMeaning.toLowerCase() ==
-                        widget.meaning.toLowerCase();
+                    isCorrect = enteredMeaning.toLowerCase().trim() ==
+                        widget.meaning.toLowerCase().trim();
 
                     meaningFocusNode.unfocus();
 

@@ -100,7 +100,7 @@ class _AddVocabState extends State<AddVocab> {
                   width: 70,
                   child: TextField(
                     onSubmitted: (value) {
-                      // setState(() {});
+                      setState(() {});
                     },
                     controller: startController,
                     decoration: InputDecoration(
@@ -113,7 +113,7 @@ class _AddVocabState extends State<AddVocab> {
                   width: 70,
                   child: TextField(
                     onSubmitted: (value) {
-                      // setState(() {});
+                      setState(() {});
                     },
                     controller: endController,
                     decoration: InputDecoration(
