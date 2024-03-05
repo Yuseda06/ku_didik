@@ -378,7 +378,8 @@ class _CarouselItemState extends State<CarouselItem> {
 
                     String enteredMeaning = meaningController.text;
 
-                    isCorrect = enteredMeaning == widget.meaning;
+                    isCorrect = enteredMeaning.toLowerCase() ==
+                        widget.meaning.toLowerCase();
 
                     meaningFocusNode.unfocus();
 
