@@ -50,7 +50,7 @@ class _RoundedAppBarState extends State<RoundedAppBar> {
         ],
       ),
       child: AppBar(
-        automaticallyImplyLeading: false,
+        // automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
         elevation: 0.0, // Remove app bar shadow
         title: Text(widget.title, style: const TextStyle(color: Colors.white)),
