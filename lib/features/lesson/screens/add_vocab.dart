@@ -6,6 +6,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:ku_didik/common_widgets/didik_app_bar.dart';
 import 'package:ku_didik/features/lesson/controllers/firebase_controller.dart';
 import 'package:ku_didik/utils/provider/username_provider.dart';
+import 'package:ku_didik/utils/provider/words_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:translator/translator.dart' as translator_package;
 import 'package:flutter_tts/flutter_tts.dart';
@@ -41,7 +42,9 @@ class _AddVocabState extends State<AddVocab> {
 
   @override
   void initState() {
-    // TODO: implement initState
+    String start = startController.text = '1';
+    String end = endController.text = '2';
+
     super.initState();
   }
 
@@ -49,27 +52,45 @@ class _AddVocabState extends State<AddVocab> {
   Widget build(BuildContext context) {
     final usernameProvider = Provider.of<UsernameProvider>(context);
     String username = usernameProvider.username ?? '';
-
     String start = startController.text.isEmpty ? "1" : startController.text;
     String end = endController.text.isEmpty ? "2" : endController.text;
 
-    String wordCount = "0";
-
-    Future<void> fetchData() async {
-      try {
-        wordCount = await retrieveWordCount(username)
-            .toString(); // Replace "username" with the actual username
-        print('Word count from AnotherScreen: $wordCount');
-      } catch (error) {
-        print('Error fetching word count: $error');
-      }
-    }
-
-    fetchData();
     return Scaffold(
-      appBar: RoundedAppBar(title: wordCount),
+      appBar: RoundedAppBar(title: 'Add New Vocab'),
       body: Column(
         children: [
+          StreamBuilder<void>(
+            stream: _refreshController.stream,
+            builder: (context, snapshot) {
+              return FutureBuilder(
+                future: _getWordCount(username),
+                builder: (context, AsyncSnapshot<int> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else {
+                    int wordCount =
+                        snapshot.data ?? 0; // Default to 0 if data is null
+
+                    // Replace the CarouselSlider with a widget that displays the word count
+                    return Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Text(
+                          'Word Count: $wordCount',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+                },
+              );
+            },
+          ),
           Container(
             padding: EdgeInsets.only(top: 20),
             child: Row(
@@ -79,7 +100,7 @@ class _AddVocabState extends State<AddVocab> {
                   width: 70,
                   child: TextField(
                     onSubmitted: (value) {
-                      setState(() {});
+                      // setState(() {});
                     },
                     controller: startController,
                     decoration: InputDecoration(
@@ -92,7 +113,7 @@ class _AddVocabState extends State<AddVocab> {
                   width: 70,
                   child: TextField(
                     onSubmitted: (value) {
-                      setState(() {});
+                      // setState(() {});
                     },
                     controller: endController,
                     decoration: InputDecoration(
@@ -206,6 +227,25 @@ class _AddVocabState extends State<AddVocab> {
     );
   }
 
+  Future<int> _getWordCount(String username) async {
+    try {
+      DatabaseReference userDatabaseReference =
+          FirebaseDatabase.instance.ref('users/$username/english/vocab/words');
+
+      DatabaseEvent event = await userDatabaseReference.once();
+      DataSnapshot snapshot = event.snapshot;
+
+      Map<dynamic, dynamic> values =
+          (snapshot.value as Map<dynamic, dynamic>) ?? {};
+
+      return values.length;
+    } catch (error) {
+      print('Error retrieving data: $error');
+      // Handle the error as needed
+      return 0; // Return 0 or handle it in a way that makes sense for your application
+    }
+  }
+
   Future<List<Word>> _getData(String username, String start, String end) async {
     try {
       DatabaseReference userDatabaseReference =
@@ -227,8 +267,7 @@ class _AddVocabState extends State<AddVocab> {
             (b.value['timestamp'] ?? 0).compareTo(a.value['timestamp'] ?? 0));
 
       // sortedValues = sortedValues.take(10).toList();
-      sortedValues =
-          sortedValues.sublist(int.parse(start) - 1, int.parse(end) - 1);
+      sortedValues = sortedValues.sublist(int.parse(start) - 1, int.parse(end));
 
       for (var entry in sortedValues) {
         words.add(Word(

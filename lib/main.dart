@@ -11,6 +11,7 @@ import 'package:ku_didik/login_page.dart';
 import 'package:ku_didik/signup_page.dart';
 import 'package:ku_didik/utils/pick_image.dart';
 import 'package:ku_didik/utils/provider/score_provider.dart';
+import 'package:ku_didik/utils/provider/words_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:ku_didik/utils/provider/profile_provider.dart';
 import 'package:ku_didik/utils/provider/username_provider.dart';
@@ -44,6 +45,7 @@ void main() async {
         ChangeNotifierProvider(create: (context) => ProfileProvider()),
         ChangeNotifierProvider(create: (context) => UsernameProvider()),
         ChangeNotifierProvider(create: (context) => ScoreProvider()),
+        ChangeNotifierProvider(create: (context) => WordsProvider()),
         // Add more providers if needed
       ],
       child: MyApp(),

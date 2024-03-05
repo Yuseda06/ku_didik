@@ -33,6 +33,8 @@ class _RoundedAppBarState extends State<RoundedAppBar> {
 
     final Image avatarImage = Image.memory(bytes, key: imageKey);
 
+    print('title: ${widget.title}');
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.only(

@@ -1,12 +1,14 @@
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:ku_didik/common_widgets/didik_drawer.dart';
 import 'package:ku_didik/features/authentication/models/users.dart';
 import 'package:ku_didik/features/lesson/controllers/firebase_controller.dart';
+import 'package:ku_didik/utils/provider/words_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:ku_didik/utils/provider/profile_provider.dart';
 import 'package:ku_didik/utils/provider/username_provider.dart';
@@ -20,17 +22,31 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late Stream<Users?> _userStream;
+  late WordsProvider wordsProvider;
+  late UsernameProvider usernameProvider;
+
   final CollectionReference _items =
       FirebaseFirestore.instance.collection("users");
   late Stream<QuerySnapshot> _stream;
+
+  String username = '';
 
   @override
   void initState() {
     super.initState();
     final user = FirebaseAuth.instance.currentUser;
     _stream = FirebaseFirestore.instance.collection('users').snapshots();
-
     _userStream = readUser(user?.uid ?? '');
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    wordsProvider = Provider.of<WordsProvider>(context);
+    usernameProvider = Provider.of<UsernameProvider>(context);
+    username = usernameProvider.username ?? '';
+
+    // Now you can use wordsProvider in fetchData
   }
 
   @override
@@ -41,7 +57,6 @@ class _HomePageState extends State<HomePage> {
     String username = usernameProvider.username ?? '';
 
     getScore(username, context);
-
     String getGreeting() {
       var hour = DateTime.now().hour;
 
